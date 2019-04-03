@@ -12,13 +12,18 @@ const routes: Routes = [
     loadChildren: './home/home.module#HomePageModule'
   },
   {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    path: 'movements',
+    loadChildren: './movements/movements.module#MovementsPageModule'
   },
-  { path: 'movements', loadChildren: './movements/movements.module#MovementsPageModule' },
-  { path: 'statistics', loadChildren: './statistics/statistics.module#StatisticsPageModule' },
+  {
+    path: 'statistics',
+    loadChildren: './statistics/statistics.module#StatisticsPageModule'
+  },
   { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
-  { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule' }
+  {
+    path: 'settings',
+    loadChildren: './settings/settings.module#SettingsPageModule'
+  }
 ];
 
 @NgModule({
