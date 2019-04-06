@@ -23,7 +23,10 @@ const routes: Routes = [
   {
     path: 'settings',
     loadChildren: './settings/settings.module#SettingsPageModule'
-  }
+  },
+  { path: 'new-account', loadChildren: './new-account/new-account.module#NewAccountPageModule' },
+  { path: 'new-movement', loadChildren: './new-movement/new-movement.module#NewMovementPageModule' },
+  { path: 'categories', loadChildren: './categories/categories.module#CategoriesPageModule' }
 ];
 
 @NgModule({
