@@ -1,9 +1,77 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>new-movement</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/movements"></ion-back-button>
+    </ion-buttons>
+    <ion-title>New movement</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onNewMovement()" [disabled]="false">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-grid padding>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">
+            Movement type
+          </ion-label>
+          <ion-select placeholder="Select a movement type">
+            <ion-select-option value="expense">Expense</ion-select-option>
+            <ion-select-option value="income">Income</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">
+            Category
+          </ion-label>
+          <ion-button (click)="onPickCategory()" fill="clear" expand="block"
+            >Select a category</ion-button
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">
+            Description
+          </ion-label>
+          <ion-input type="text" ngModel name="description" required>
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">
+            Value
+          </ion-label>
+          <ion-input type="number" ngModel name="value" required> </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="12">
+        <ion-item>
+          <ion-label position="floating">Date</ion-label>
+          <ion-datetime
+            display-format="DD-MM-YYYY"
+            picker-format="DD MM YYYY"
+            name="date"
+            required
+          ></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -12,4 +12,12 @@ export class NewMovementPage implements OnInit {
   ngOnInit() {
   }
 
+
+  onPickCategory() {
+    console.log('test');
+  }
+
+  onNewMovement() {
+    
+  }
 }
