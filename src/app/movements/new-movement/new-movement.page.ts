@@ -43,31 +43,31 @@ export class NewMovementPage implements OnInit {
     console.log('test');
   }
 
-  // onCreateMovement() {
-  //   if (!this.form.valid) {
-  //     return;
-  //   }
-  //   this.loadingCtrl
-  //     .create({
-  //       message: 'Adding movement...'
-  //     })
-  //     .then(loadingElement => {
-  //       loadingElement.present();
-  //       console.log(this.form);
-  //       this.movementsService
-  //         .addMovement(
-  //           'accountId1',
-  //           this.form.value.type,
-  //           this.form.value.description,
-  //           new Category('id1', 'comida', 'urlIcon1'),
-  //           this.form.value.value,
-  //           new Date(this.form.value.date)
-  //         )
-  //         .subscribe(() => {
-  //           loadingElement.dismiss();
-  //           this.form.reset();
-  //           this.router.navigate(['/movements']);
-  //         });
-  //     });
-  // }
+  onCreateMovement() {
+    if (!this.form.valid) {
+      return;
+    }
+    this.loadingCtrl
+      .create({
+        message: 'Adding movement...'
+      })
+      .then(loadingElement => {
+        loadingElement.present();
+        console.log(this.form);
+        this.movementsService
+          .addMovement(
+            'accountId1',
+            this.form.value.type,
+            this.form.value.description,
+            new Category('id1', 'comida', 'urlIcon1'),
+            this.form.value.value,
+            new Date(this.form.value.date)
+          )
+          .subscribe(() => {
+            loadingElement.dismiss();
+            this.form.reset();
+            this.router.navigate(['/movements']);
+          });
+      });
+  }
 }

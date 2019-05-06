@@ -20,19 +20,24 @@ interface MovementData {
 })
 export class MovementsService {
 
+  private movementsUrl = 'https://myfinance-daam.firebaseio.com/movements.json';
+
   private _movements = new BehaviorSubject<Movement[]>([]);
 
   get movements() {
     return this._movements.asObservable();
   }
-
-  // movements: Movement[] = [new Movement('id1', 'accountId1', MovementType.EXPENSE,
-  // new Category('categoryId1', 'compras', 'urlIcon1'), 'didu', 6, new Date())];
   
   constructor(private http: HttpClient) { }
 
   addMovement(accountId: string, type: MovementType, description: string, category: Category, value: number, date: Date) {
     let generatedId: string;
+
+    // if it's an expensive it should be a negative number
+    if (type.toLocaleLowerCase === MovementType.EXPENSE.toLocaleLowerCase) {
+      value = value * -1;
+    }
+
     const newMovement = new Movement(
       Math.random().toString(),
       accountId,
@@ -44,7 +49,7 @@ export class MovementsService {
     );
     return this.http
       .post<{ name: string }>(
-        'https://myfinance-daam.firebaseio.com/movements.json',
+        this.movementsUrl,
         { ...newMovement, id: null }
       )
       .pipe(
@@ -63,7 +68,7 @@ export class MovementsService {
   getMovements() {
     return this.http
       .get<{ [key: string]: MovementData }>(
-        'https://myfinance-daam.firebaseio.com/movements.json'
+        this.movementsUrl
       )
       .pipe(
         map(response => {

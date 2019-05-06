@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Movement } from './movement.model';
-import { MovementType } from './movement-type.enum';
-import { Category } from './categories/category.model';
 import { Router } from '@angular/router';
 import { MovementsService } from './movements.service';
 
@@ -12,11 +10,15 @@ import { MovementsService } from './movements.service';
 })
 export class MovementsPage implements OnInit {
 
-  movements: any[];
+  movements: Movement[] = [];
 
   constructor(private router: Router, private movementsService: MovementsService) { }
 
   ngOnInit() {
+    this.getMovements();
+  }
+
+  ionViewWillEnter() {
     this.getMovements();
   }
 
