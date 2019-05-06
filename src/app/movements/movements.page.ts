@@ -12,16 +12,24 @@ import { MovementsService } from './movements.service';
 })
 export class MovementsPage implements OnInit {
 
-  movements: Movement[] = [];
+  movements: any[];
 
   constructor(private router: Router, private movementsService: MovementsService) { }
 
   ngOnInit() {
-    
+    this.getMovements();
   }
 
   onNewMovement() {
     this.router.navigateByUrl('new-movement');
   }
+
+  getMovements() {
+    this.movementsService.getMovements().subscribe((res: any[]) => {
+      this.movements = res;
+    });
+  }
+
+
 
 }

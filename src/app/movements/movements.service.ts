@@ -2,9 +2,18 @@ import { Injectable } from '@angular/core';
 import { Movement } from './movement.model';
 import { MovementType } from './movement-type.enum';
 import { Category } from './categories/category.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { take, tap, switchMap } from 'rxjs/operators';
+import { take, tap, switchMap, map, catchError } from 'rxjs/operators';
+
+interface MovementData {
+  accountId: string;
+  category: Category;
+  date: Date;
+  description: string;
+  type: string;
+  value: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +61,35 @@ export class MovementsService {
   }
   
   getMovements() {
-    return this.movements;
+    return this.http
+      .get<{ [key: string]: MovementData }>(
+        'https://myfinance-daam.firebaseio.com/movements.json'
+      )
+      .pipe(
+        map(response => {
+          const movements = [];
+          for (const key in response) {
+            if (response.hasOwnProperty(key)) {
+              movements.push(
+                new Movement(
+                  key,
+                  response[key].accountId,
+                  response[key].type === MovementType.EXPENSE ? MovementType.EXPENSE : MovementType.INCOME,
+                  response[key].category,
+                  response[key].description,
+                  response[key].value,
+                  new Date(response[key].date),
+                )
+              );
+            }
+          }
+          return movements;
+        }),
+        tap(movements => {
+          this._movements.next(movements);
+        })
+      );
   }
+
+
 }
