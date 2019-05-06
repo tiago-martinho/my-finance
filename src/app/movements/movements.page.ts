@@ -3,6 +3,7 @@ import { Movement } from './movement.model';
 import { MovementType } from './movement-type.enum';
 import { Category } from './categories/category.model';
 import { Router } from '@angular/router';
+import { MovementsService } from './movements.service';
 
 @Component({
   selector: 'app-movements',
@@ -11,12 +12,12 @@ import { Router } from '@angular/router';
 })
 export class MovementsPage implements OnInit {
 
-  movements: Movement[] = [new Movement('id1', 'accountId1', MovementType.EXPENSE,
-  new Category('categoryId1', 'compras', 'urlIcon1'), 'didu', 6, new Date())];
-  
-  constructor(private router: Router) { }
+  movements: Movement[] = [];
+
+  constructor(private router: Router, private movementsService: MovementsService) { }
 
   ngOnInit() {
+    this.movements = this.movementsService.getMovements();
   }
 
   onNewMovement() {
