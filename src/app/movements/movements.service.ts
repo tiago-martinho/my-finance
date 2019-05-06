@@ -35,7 +35,7 @@ export class MovementsService {
     );
     return this.http
       .post<{ name: string }>(
-        'https://ionic-booking-f243a.firebaseio.com/offered-places.json',
+        'https://myfinance-daam.firebaseio.com/movements.json',
         { ...newMovement, id: null }
       )
       .pipe(

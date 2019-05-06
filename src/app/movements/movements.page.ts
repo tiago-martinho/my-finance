@@ -17,7 +17,7 @@ export class MovementsPage implements OnInit {
   constructor(private router: Router, private movementsService: MovementsService) { }
 
   ngOnInit() {
-    this.movements = this.movementsService.getMovements();
+    
   }
 
   onNewMovement() {
