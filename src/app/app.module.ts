@@ -9,6 +9,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ChartsModule } from 'ng2-charts';
 
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt-PT';
@@ -21,7 +22,8 @@ registerLocaleData(localePt);
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    ChartsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-PT'},
