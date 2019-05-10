@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Movement } from './movement.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, of, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { take, tap, switchMap, map, catchError } from 'rxjs/operators';
 
@@ -113,5 +113,58 @@ export class MovementsService {
     );
   }
 
+  updateMovement(id: string, categoryId: string, categoryName: string, description: string, isExpense: boolean, value: number,
+    date: Date) {
+    let updatedMovements: Movement[];
+    return this.movements.pipe(
+      take(1),
+      switchMap(movements => {
+        if (!movements || movements.length === 0) {
+          return this.getMovements();
+        } else {
+          return of(movements);
+        }
+      }),
+      switchMap(movements => {
+        const updatedMovementIndex = movements.findIndex(m => m.id === id);
+        updatedMovements = [...movements];
+        const oldMovement = updatedMovements[updatedMovementIndex];
+        const newMovement = new Movement();
+        newMovement.id = oldMovement.id;
+        newMovement.accountId = oldMovement.accountId;
+        newMovement.categoryId = categoryId;
+        newMovement.categoryName = categoryName;
+        newMovement.description = description;
+        newMovement.isExpense = isExpense;
+        newMovement.value = value;
+        newMovement.date = date;
 
+        updatedMovements[updatedMovementIndex] = newMovement;
+
+        return this.http.put(
+          this.movementsUrl + `/${id}.json`,
+          { ...updatedMovements[updatedMovementIndex], id: null }
+        );
+      }),
+      tap(() => {
+        this._movements.next(updatedMovements);
+      })
+    );
+  }
+
+  deleteMovement(id: string) {
+    return this.http
+      .delete(
+        this.movementsUrl + `/${id}.json`
+      )
+      .pipe(
+        switchMap(() => {
+          return this.movements;
+        }),
+        take(1),
+        tap(movements => {
+          this._movements.next(movements.filter(m => m.id !== id));
+        })
+      );
+  }
 }

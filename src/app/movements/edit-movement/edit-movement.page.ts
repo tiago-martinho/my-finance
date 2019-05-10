@@ -14,6 +14,7 @@ import { Movement } from '../movement.model';
 export class EditMovementPage extends MovementDetail
   implements OnInit, OnDestroy {
 
+    movementId: string;
     movementDate: string;
     movementType: string;
     isLoading = false;
@@ -68,16 +69,39 @@ export class EditMovementPage extends MovementDetail
 }
 
 setFormValues(movement: Movement) {
+  this.movementId = movement.id;
   this.form.get('type').setValue(movement.isExpense ? 'expense' : 'income');
   this.form.get('description').setValue(movement.description);
   this.form.get('value').setValue(movement.value);
   this.form.get('date').setValue(movement.date.toISOString());
 }
 
-  onEditMovement() {
+onUpdateMovement() {
     if (!this.form.valid) {
-      console.log('not valid');
+      return;
     }
+    this.loadingCtrl
+    .create({
+      message: 'Updating movement...'
+    })
+    .then(loadingElement => {
+      loadingElement.present();
+      this.movementsService
+        .updateMovement(
+          this.movementId,
+          'categoryId',
+          'categoryName',
+          this.form.value.description,
+          this.form.value.type === 'expense' ? true : false,
+          this.form.value.value,
+          this.form.value.date
+        )
+        .subscribe(() => {
+          loadingElement.dismiss();
+          this.form.reset();
+          this.router.navigate(['/movements']);
+        });
+    });
   }
 
   ngOnDestroy(): void {
