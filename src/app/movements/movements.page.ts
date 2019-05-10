@@ -33,7 +33,9 @@ export class MovementsPage implements OnInit {
 
   getMovements() {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
-      this.groupMovements(res);
+      if (res.length !== 0) {
+        this.groupMovements(res);
+      }
       this.isLoading = false;
     });
   }
@@ -71,7 +73,7 @@ export class MovementsPage implements OnInit {
 
     //sort the arrays by date
     this.movementsMatrix = this.movementsMatrix.sort((function(a, b) { 
-      return a[6] > b[6] ? 1 : -1;
+      return a[7] > b[7] ? 1 : -1;
     }));
 
     console.log(this.movementsMatrix);

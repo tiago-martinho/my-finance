@@ -36,7 +36,8 @@ const routes: Routes = [
   {
     path: 'categories',
     loadChildren: './movements/categories/categories.module#CategoriesPageModule'
-  },  { path: 'edit-movement', loadChildren: './movements/edit-movement/edit-movement.module#EditMovementPageModule' }
+  },
+  { path: 'edit-movement/:movementId', loadChildren: './movements/edit-movement/edit-movement.module#EditMovementPageModule' }
 
 ];
 
