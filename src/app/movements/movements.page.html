@@ -19,7 +19,7 @@
             No movements found! Please create one first!
           </p>
         </div>
-        <ion-list *ngIf="movementsMatrix.length > 0">
+        <ion-list *ngIf="!isLoading && movementsMatrix.length > 0">
           <ion-list *ngFor="let arr of movementsMatrix">
             <ion-list-header color="tertiary">
               <ion-label>{{

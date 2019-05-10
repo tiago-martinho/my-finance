@@ -39,10 +39,8 @@ export class MovementsPage implements OnInit, OnDestroy {
 
   getMovements() {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
-      if (res.length !== 0) {
         this.groupMovements(res);
-      }
-      this.isLoading = false;
+        this.isLoading = false;
     });
   }
 
@@ -54,7 +52,13 @@ export class MovementsPage implements OnInit, OnDestroy {
 
   //This function groups and orders the movements by year-month in order to create headers in the list presented in the view
   groupMovements(movements: Movement[]) {
+
     this.movementsMatrix = [];
+
+    if (movements.length === 0) {
+      return;
+    }
+    
     //group by YYYY-MM
     const groups = _.groupBy(movements, function(item) {
       return item.date.toISOString().substring(0, 7);
@@ -81,8 +85,6 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsMatrix = this.movementsMatrix.sort((function(a, b) { 
       return a[7] > b[7] ? 1 : -1;
     }));
-
-    console.log(this.movementsMatrix);
   }   
 
   ngOnDestroy(): void {
