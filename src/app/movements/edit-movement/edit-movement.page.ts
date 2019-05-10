@@ -104,6 +104,18 @@ onUpdateMovement() {
     });
   }
 
+  onDeleteMovement() {
+    this.loadingCtrl
+      .create({ message: 'Deleting movement...' })
+      .then(loadingElement => {
+        loadingElement.present();
+        this.movementsService.deleteMovement(this.movementId).subscribe(() => {
+          loadingElement.dismiss();
+          this.router.navigate(['/movements']);
+        });
+      });
+  }
+
   ngOnDestroy(): void {
     if (this.movementSub) {
       this.movementSub.unsubscribe();
