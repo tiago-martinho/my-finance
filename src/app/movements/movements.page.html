@@ -10,13 +10,24 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col size="12" size-sm="8" offset-sm="2">
+          <div *ngIf="isLoading" text-center>
+              <ion-spinner color="primary"></ion-spinner>
+          </div>
+        <div text-center *ngIf="!isLoading && movementsMatrix.length === 0">
+          <p>
+            No movements found! Please create one first!
+          </p>
+        </div>
         <ion-list *ngIf="movementsMatrix.length > 0">
           <ion-list *ngFor="let arr of movementsMatrix">
             <ion-list-header color="tertiary">
-              <ion-label>{{ arr[0].date.toISOString().substring(0, 7) }}</ion-label>
+              <ion-label>{{
+                arr[0].date.toISOString().substring(0, 7)
+              }}</ion-label>
             </ion-list-header>
-            <ion-item text-wrap *ngFor="let movement of arr">
+            <ion-item text-wrap *ngFor="let movement of arr" 
+            [routerLink]="['/', 'edit-movement']" detail>
               <ion-label>
                 <h2>{{ movement.description }}</h2>
                 <p>{{ movement.category.name }}</p>

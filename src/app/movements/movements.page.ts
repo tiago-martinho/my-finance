@@ -3,6 +3,7 @@ import { Movement } from './movement.model';
 import { Router } from '@angular/router';
 import { MovementsService } from './movements.service';
 import * as _ from 'lodash';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-movements',
@@ -12,6 +13,7 @@ import * as _ from 'lodash';
 export class MovementsPage implements OnInit {
 
   movementsMatrix: Movement[][] = [];
+  isLoading = false;
 
   constructor(private router: Router, private movementsService: MovementsService) { }
 
@@ -20,8 +22,9 @@ export class MovementsPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.isLoading = true;
     this.getMovements();
-    console.log('called');
+    
   }
 
   onNewMovement() {
@@ -31,7 +34,14 @@ export class MovementsPage implements OnInit {
   getMovements() {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
       this.groupMovements(res);
+      this.isLoading = false;
     });
+  }
+
+  onEdit(movementId: string, slidingItem: IonItemSliding) {
+    slidingItem.close();
+    this.router.navigate(['/', 'new-movements', movementId]);
+    console.log('Editing item ' + movementId);
   }
 
   //This function groups and orders the movements by year-month in order to create headers in the list presented in the view
