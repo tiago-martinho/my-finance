@@ -1,47 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MovementsService } from '../movements.service';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { Category } from '../categories/category.model';
+import { MovementDetail } from '../movement-detail';
 
 @Component({
   selector: 'app-new-movement',
   templateUrl: './new-movement.page.html',
   styleUrls: ['./new-movement.page.scss'],
 })
-export class NewMovementPage implements OnInit {
-  form: FormGroup;
+export class NewMovementPage extends MovementDetail implements OnInit {
 
-  constructor( private movementsService: MovementsService,
-    private router: Router,
-    private loadingCtrl: LoadingController) { }
+  constructor(protected movementsService: MovementsService,
+    protected router: Router,
+    protected loadingCtrl: LoadingController) {
+      super(movementsService, router, loadingCtrl);
+      console.log('In new');
+     }
 
-  ngOnInit() {
-    this.form = new FormGroup({
-      type: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
-      description: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(180)]
-      }),
-      value: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(1)]
-      }),
-      date: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      })
-    });
-  }
-
-
-  onPickCategory() {
-    console.log('test');
-  }
 
   onCreateMovement() {
     if (!this.form.valid) {
