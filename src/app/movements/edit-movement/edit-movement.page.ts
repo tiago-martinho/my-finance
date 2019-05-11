@@ -5,7 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {
   LoadingController,
   NavController,
-  AlertController
+  AlertController,
+  ModalController
 } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Movement } from '../movement.model';
@@ -27,11 +28,13 @@ export class EditMovementPage extends MovementDetail
     protected movementsService: MovementsService,
     protected router: Router,
     protected loadingCtrl: LoadingController,
+    protected modalCtrl: ModalController,
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private alertCtrl: AlertController
+    
   ) {
-    super(movementsService, router, loadingCtrl);
+    super(movementsService, router, loadingCtrl, modalCtrl);
     console.log('child constructor');
   }
 
@@ -94,8 +97,8 @@ export class EditMovementPage extends MovementDetail
         this.movementsService
           .updateMovement(
             this.movementId,
-            'categoryId',
-            'categoryName',
+            this.category.id,
+            this.category.name,
             this.form.value.description,
             this.form.value.type === 'expense' ? true : false,
             this.form.value.value,

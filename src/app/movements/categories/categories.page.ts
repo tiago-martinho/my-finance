@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Category } from './category.model';
 import { Subscription } from 'rxjs';
 import { MovementsService } from '../movements.service';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-categories',
@@ -14,7 +15,7 @@ export class CategoriesPage implements OnInit, OnDestroy {
 
   categories: Category[] = [];
 
-  constructor(private movementsService: MovementsService) {}
+  constructor(private movementsService: MovementsService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
     this.categoriesSub = this.movementsService.categories.subscribe(
@@ -31,8 +32,19 @@ export class CategoriesPage implements OnInit, OnDestroy {
     });
   }
 
-  onCategoryPick() {
-    console.log('clicked category');
+  onCategoryPick(category: Category) {
+    this.modalCtrl.dismiss(
+      {
+        categoryData: {
+          pickedCategory: category
+        }
+      },
+      'confirm'
+    );
+  }
+
+  onCancel() {
+    this.modalCtrl.dismiss(null, 'cancel');
   }
 
   ngOnDestroy() {

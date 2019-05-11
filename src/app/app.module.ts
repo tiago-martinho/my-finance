@@ -13,13 +13,17 @@ import { ChartsModule } from 'ng2-charts';
 
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt-PT';
+import { CategoriesPage } from './movements/categories/categories.page';
+import { CategoriesPageModule } from './movements/categories/categories.module';
+
 registerLocaleData(localePt);
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
+  entryComponents: [CategoriesPage],
   imports: [
     BrowserModule,
+    CategoriesPageModule,
     HttpClientModule,
     IonicModule.forRoot(),
     AppRoutingModule,

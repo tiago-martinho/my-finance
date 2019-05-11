@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MovementsService } from '../movements.service';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { Category } from '../categories/category.model';
 import { MovementDetail } from '../movement-detail';
 
@@ -14,8 +14,9 @@ export class NewMovementPage extends MovementDetail implements OnInit {
 
   constructor(protected movementsService: MovementsService,
     protected router: Router,
-    protected loadingCtrl: LoadingController) {
-      super(movementsService, router, loadingCtrl);
+    protected loadingCtrl: LoadingController,
+    protected modalCtrl: ModalController) {
+      super(movementsService, router, loadingCtrl, modalCtrl);
       console.log('In new');
      }
 
@@ -36,8 +37,8 @@ export class NewMovementPage extends MovementDetail implements OnInit {
             'accountId1',
             this.form.value.type === 'expense' ? true : false,
             this.form.value.description,
-            'categoryId',
-            'categoryName',
+            this.category.id,
+            this.category.name,
             this.form.value.value,
             new Date(this.form.value.date)
           )

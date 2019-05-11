@@ -2,15 +2,19 @@ import {  OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MovementsService } from './movements.service';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { CategoriesPage } from './categories/categories.page';
+import { Category } from './categories/category.model';
 
 export class MovementDetail implements OnInit {
   form: FormGroup;
+  category: Category;
 
   constructor(
     protected movementsService: MovementsService,
     protected router: Router,
-    protected loadingCtrl: LoadingController
+    protected loadingCtrl: LoadingController,
+    protected modalCtrl: ModalController
   ) {
     console.log('parent constructor')
   }
@@ -19,6 +23,10 @@ export class MovementDetail implements OnInit {
     console.log('parent init');
     this.form = new FormGroup({
       type: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required]
+      }),
+      category: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required]
       }),
@@ -39,6 +47,19 @@ export class MovementDetail implements OnInit {
 
   onPickCategory() {
     console.log('opening category modal');
-    
+    this.modalCtrl
+      .create({
+        component: CategoriesPage
+      })
+      .then(modalElement => {
+        modalElement.present();
+        return modalElement.onDidDismiss();
+      })
+      .then(resultData => {
+        if (resultData.role === 'confirm') {
+          this.category = resultData.data.categoryData.pickedCategory;
+          this.form.controls['category'].setValue(this.category.name);
+        }
+      });
   }
 }

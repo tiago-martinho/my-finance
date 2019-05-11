@@ -41,7 +41,13 @@
             <ion-label position="floating">
               Category
             </ion-label>
-            <ion-input type="text" (click)="onPickCategory()" [disabled]>Select a category</ion-input>
+            <ion-input
+              type="text"
+              (click)="onPickCategory()"
+              placeholder="Select a category"
+              formControlName="category"
+              readonly
+            ></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>

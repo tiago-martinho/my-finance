@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { EditMovementPage } from './edit-movement.page';
+import { CategoriesPage } from '../categories/categories.page';
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EditMovementPage]
+  declarations: [EditMovementPage],
 })
 export class EditMovementPageModule {}

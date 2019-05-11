@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Categories</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -10,7 +15,7 @@
     <ion-col size="12">
       <ion-list *ngIf="categories.length > 0">
         <ion-item button *ngFor="let category of categories">
-          <ion-label (click)="onCategoryPick()">
+          <ion-label (click)="onCategoryPick(category)">
             <ion-ripple-effect></ion-ripple-effect>
             {{ category.name }}
           </ion-label>
