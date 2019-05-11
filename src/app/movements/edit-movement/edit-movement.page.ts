@@ -79,6 +79,7 @@ export class EditMovementPage extends MovementDetail
   setFormValues(movement: Movement) {
     this.movementId = movement.id;
     this.form.get('type').setValue(movement.isExpense ? 'expense' : 'income');
+    this.form.get('category').setValue(movement.categoryName);
     this.form.get('description').setValue(movement.description);
     this.form.get('value').setValue(movement.value);
     this.form.get('date').setValue(movement.date.toISOString());

@@ -1,7 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BankAccount } from '../accounts/UserAccount.model';
-import { BaseChartDirective, Color, Label } from 'ng2-charts';
-import { ChartDataSets, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-home',
@@ -10,18 +7,21 @@ import { ChartDataSets, ChartOptions } from 'chart.js';
 })
 export class HomePage implements OnInit {
 
-  account = new BankAccount('id1', 'uid1', 'TestAcc1', 10000, null);
+  account = {};
 
   chartOptions = {
     responsive: true,
     fill: false
   };
 
+  //change with movements data
   chartData = [
     { data: [330, 600, 260, 700],  fill: false }
   ];
 
+  //change (last 30 days)
   chartLabels = ['January', 'February', 'March', 'April'];
+
 
   myColors = [
     {
@@ -31,7 +31,6 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: '#406dff',
       pointHoverBorderColor: '#fffff'
     },
-    // ...colors for additional data sets
   ];
 
   onChartClick(event) {
@@ -41,6 +40,7 @@ export class HomePage implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    
 
   }
 

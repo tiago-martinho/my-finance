@@ -25,17 +25,8 @@ const routes: Routes = [
     loadChildren: './settings/settings.module#SettingsPageModule'
   },
   {
-    path: 'accounts',
-    loadChildren: './accounts/new-account.module#NewAccountPageModule'
-  },
-
-  {
     path: 'new-movement',
     loadChildren: './movements/new-movement/new-movement.module#NewMovementPageModule'
-  },
-  {
-    path: 'categories',
-    loadChildren: './movements/categories/categories.module#CategoriesPageModule'
   },
   { path: 'edit-movement/:movementId', loadChildren: './movements/edit-movement/edit-movement.module#EditMovementPageModule' }
 

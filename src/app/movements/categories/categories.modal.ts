@@ -6,10 +6,9 @@ import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-categories',
-  templateUrl: './categories.page.html',
-  styleUrls: ['./categories.page.scss']
+  templateUrl: './categories.modal.html'
 })
-export class CategoriesPage implements OnInit, OnDestroy {
+export class CategoriesModal implements OnInit, OnDestroy {
   private categoriesSub: Subscription;
   isLoading = false;
 

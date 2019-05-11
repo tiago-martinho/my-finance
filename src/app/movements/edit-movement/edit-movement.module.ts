@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { EditMovementPage } from './edit-movement.page';
-import { CategoriesPage } from '../categories/categories.page';
+import { CategoriesModule } from '../categories/categories.module';
 
 const routes: Routes = [
   {
@@ -20,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    CategoriesModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],

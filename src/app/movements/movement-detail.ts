@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MovementsService } from './movements.service';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { CategoriesPage } from './categories/categories.page';
+import { CategoriesModal } from './categories/categories.modal';
 import { Category } from './categories/category.model';
 
 export class MovementDetail implements OnInit {
@@ -49,7 +49,7 @@ export class MovementDetail implements OnInit {
     console.log('opening category modal');
     this.modalCtrl
       .create({
-        component: CategoriesPage
+        component: CategoriesModal
       })
       .then(modalElement => {
         modalElement.present();
