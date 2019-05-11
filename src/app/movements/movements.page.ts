@@ -29,19 +29,14 @@ export class MovementsPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.isLoading = true;
-    this.getMovements();
-    
+    this.movementsService.getMovements().subscribe((res: Movement[]) => {
+      this.groupMovements(res);
+      this.isLoading = false;
+  });
   }
 
   onNewMovement() {
     this.router.navigateByUrl('new-movement');
-  }
-
-  getMovements() {
-    this.movementsService.getMovements().subscribe((res: Movement[]) => {
-        this.groupMovements(res);
-        this.isLoading = false;
-    });
   }
 
   onEdit(movementId: string, slidingItem: IonItemSliding) {

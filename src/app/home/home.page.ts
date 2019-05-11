@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserAccount } from '../new-account/UserAccount.model';
+import { BankAccount } from '../accounts/UserAccount.model';
 import { BaseChartDirective, Color, Label } from 'ng2-charts';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 
@@ -10,7 +10,7 @@ import { ChartDataSets, ChartOptions } from 'chart.js';
 })
 export class HomePage implements OnInit {
 
-  account = new UserAccount('id1', 'uid1', 'TestAcc1', 10000, null);
+  account = new BankAccount('id1', 'uid1', 'TestAcc1', 10000, null);
 
   chartOptions = {
     responsive: true,

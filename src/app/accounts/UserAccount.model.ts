@@ -1,6 +1,6 @@
 import { Movement } from '../movements/movement.model';
 
-export class UserAccount {
+export class BankAccount {
 
      constructor(public id: string,
         public userId: string,

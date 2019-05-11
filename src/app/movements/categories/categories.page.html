@@ -10,7 +10,7 @@
     <ion-col size="12">
       <ion-list *ngIf="categories.length > 0">
         <ion-item button *ngFor="let category of categories">
-          <ion-label (click)="onCategoryClick()">
+          <ion-label (click)="onCategoryPick()">
             <ion-ripple-effect></ion-ripple-effect>
             {{ category.name }}
           </ion-label>

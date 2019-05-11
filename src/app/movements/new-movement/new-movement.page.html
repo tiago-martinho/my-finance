@@ -14,34 +14,32 @@
 
 <ion-content>
     <form [formGroup]="form">
-        <ion-grid padding>
-          <ion-row>
-            <ion-col size="12">
+        <ion-grid>
+          <ion-row class="ion-margin-top">
+            <ion-col size="12" size-sm="8" offset-sm="2">
               <ion-item>
                 <ion-label position="floating">
                   Movement type
                 </ion-label>
-                <ion-select placeholder="Select a movement type" formControlName="type">
+                <ion-select placeholder="Select a movement type" formControlName="type" required>
                   <ion-select-option value="expense">Expense</ion-select-option>
                   <ion-select-option value="income">Income</ion-select-option>
                 </ion-select>
               </ion-item>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col size="12">
+          <ion-row class="ion-margin-top">
+            <ion-col size="12" size-sm="8" offset-sm="2">
               <ion-item>
                 <ion-label position="floating">
                   Category
                 </ion-label>
-                <ion-button (click)="onPickCategory()" fill="clear" expand="block"
-                  >Select a category</ion-button
-                >
+                <ion-input type="text" (click)="onPickCategory()" placeholder="Select a category" readonly></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col size="12">
+          <ion-row class="ion-margin-top">
+            <ion-col size="12" size-sm="8" offset-sm="2">
               <ion-item>
                 <ion-label position="floating">
                   Description
@@ -51,8 +49,8 @@
               </ion-item>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col size="12">
+          <ion-row class="ion-margin-top">
+            <ion-col size="12" size-sm="8" offset-sm="2">
               <ion-item>
                 <ion-label position="floating">
                   Value
@@ -61,8 +59,8 @@
               </ion-item>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col size-sm="12">
+          <ion-row class="ion-margin-top">
+            <ion-col size="12" size-sm="8" offset-sm="2">
               <ion-item>
                 <ion-label position="floating">Date</ion-label>
                 <ion-datetime

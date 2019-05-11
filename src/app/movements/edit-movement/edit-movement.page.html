@@ -27,6 +27,7 @@
             <ion-select
               placeholder="Select a movement type"
               formControlName="type"
+              required
             >
               <ion-select-option value="expense">Expense</ion-select-option>
               <ion-select-option value="income">Income</ion-select-option>
@@ -40,9 +41,7 @@
             <ion-label position="floating">
               Category
             </ion-label>
-            <ion-button (click)="onPickCategory()" fill="clear" expand="block"
-              >Select a category</ion-button
-            >
+            <ion-input type="text" (click)="onPickCategory()" [disabled]>Select a category</ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -83,9 +82,14 @@
       </ion-row>
       <ion-row class="ion-margin-top">
         <ion-col size-sm="12" size-sm="8" offset-sm="2">
-          <ion-button color="danger" expand="block" (click)="onDeleteMovement()">
-            <ion-icon name="trash"></ion-icon>&nbsp;Delete
-            </ion-button>
+          <ion-button
+            color="danger"
+            expand="block"
+            shape="round"
+            (click)="onDeleteMovement()"
+          >
+            <ion-icon slot="start" name="trash"></ion-icon>Delete
+          </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

@@ -3,6 +3,7 @@ import { Movement } from './movement.model';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { take, tap, switchMap, map, catchError } from 'rxjs/operators';
+import { Category } from './categories/category.model';
 
 interface MovementData {
   accountId: string;
@@ -14,17 +15,29 @@ interface MovementData {
   value: number;
 }
 
+interface CategoryData {
+  categoryName: string;
+  iconUrl: string; 
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MovementsService {
 
-  private movementsUrl = 'https://myfinance-daam.firebaseio.com/movements';
+  private baseUrl = 'https://myfinance-daam.firebaseio.com/';
+  private movementsUrl = this.baseUrl + 'movements';
+  private categoriesUrl = this.baseUrl + 'categories';
 
   private _movements = new BehaviorSubject<Movement[]>([]);
+  private _categories = new BehaviorSubject<Category[]>([]);
 
   get movements() {
     return this._movements.asObservable();
+  }
+
+  get categories() {
+    return this._categories.asObservable();
   }
   
   constructor(private http: HttpClient) { }
@@ -166,5 +179,28 @@ export class MovementsService {
           this._movements.next(movements.filter(m => m.id !== id));
         })
       );
+  }
+
+  getMovementCategories() {
+    return this.http
+    .get<{ [key: string]: CategoryData }>(
+      this.categoriesUrl + '.json'
+    )
+    .pipe(
+      map(response => {
+        const categories = [];
+        for (const key in response) {
+          if (response.hasOwnProperty(key)) {
+            categories.push(
+              new Category(key, response[key].categoryName, response[key].iconUrl)
+            );
+          }
+        }
+        return categories;
+      }),
+      tap(categories => {
+        this._categories.next(categories);
+      })
+    );
   }
 }

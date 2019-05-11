@@ -38,6 +38,7 @@ export class MovementDetail implements OnInit {
   }
 
   onPickCategory() {
-    console.log('test');
+    console.log('opening category modal');
+    
   }
 }
