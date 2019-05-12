@@ -8,7 +8,7 @@ import { Category } from './categories/category.model';
 
 export class MovementDetail implements OnInit {
   form: FormGroup;
-  category: Category;
+  category: Category = new Category(null, null, null);
 
   constructor(
     protected movementsService: MovementsService,

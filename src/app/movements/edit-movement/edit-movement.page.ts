@@ -18,10 +18,10 @@ import { Movement } from '../movement.model';
 })
 export class EditMovementPage extends MovementDetail
   implements OnInit, OnDestroy {
+
   movementId: string;
-  movementDate: string;
-  movementType: string;
   isLoading = false;
+
   private movementSub: Subscription;
 
   constructor(
@@ -49,6 +49,9 @@ export class EditMovementPage extends MovementDetail
         .getMovement(paramMap.get('movementId'))
         .subscribe(
           movement => {
+            this.movementId = movement.id;
+            this.category.id = movement.categoryId;
+            this.category.name = movement.categoryName;
             this.setFormValues(movement);
             this.isLoading = false;
           },
@@ -77,7 +80,6 @@ export class EditMovementPage extends MovementDetail
   }
 
   setFormValues(movement: Movement) {
-    this.movementId = movement.id;
     this.form.get('type').setValue(movement.isExpense ? 'expense' : 'income');
     this.form.get('category').setValue(movement.categoryName);
     this.form.get('description').setValue(movement.description);
@@ -131,8 +133,9 @@ export class EditMovementPage extends MovementDetail
               .create({ message: 'Deleting movement...' })
               .then(loadingElement => {
                 loadingElement.present();
+                const isExpense = this.form.value.type === 'expense' ? true : false;
                 this.movementsService
-                  .deleteMovement(this.movementId)
+                  .deleteMovement(this.movementId, isExpense, this.form.value.value)
                   .subscribe(() => {
                     loadingElement.dismiss();
                     this.router.navigate(['/movements']);

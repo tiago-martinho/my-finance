@@ -31,7 +31,7 @@
               *ngFor="let account of accounts"
               lines="none"
             >
-              <ion-button (click)="onAccountClick()">{{ account.name }}</ion-button>
+              <ion-button (click)="onAccountSelect(account)">{{ account.name }}</ion-button>
               <ion-label position="fixed">
                 &nbsp;&nbsp;{{ account.balance | currency: 'EUR':'symbol' }}
               </ion-label>

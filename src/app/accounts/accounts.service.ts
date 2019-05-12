@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { BankAccount } from './bank-account.model';
 import { switchMap, take, tap, map } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
+import { Movement } from '../movements/movement.model';
 
 interface AccountData {
   balance: number;
@@ -89,7 +90,18 @@ export class AccountsService {
     this.currentAccount.balance = balance;
   }
 
-  updateAccountBalance() {
+  updateAccountBalanceOnAddOrDelete(isExpense: boolean, isDeletion: boolean, value: number) {
+    this.calculateAccountBalanceOnAddOrDelete(isExpense, isDeletion, value);
+    this.updateAccountBalance().subscribe();
+  }
+
+  updateAccountBalanceOnEdit(oldMovement: Movement, newMovement: Movement) {
+    this.calculateAccountBalanceOnEdit(oldMovement, newMovement);
+    this.updateAccountBalance().subscribe();
+
+  }
+
+  private updateAccountBalance() {
     let updatedAccounts: BankAccount[];
     return this.accounts.pipe(
       take(1),
@@ -112,6 +124,29 @@ export class AccountsService {
       tap(() => {
         this._accounts.next(updatedAccounts);
       })
-    )
+    );
+  }
+
+  private calculateAccountBalanceOnAddOrDelete(isExpense: boolean, isDeletion: boolean, value: number) {
+    if ( (isExpense && isDeletion) || (!isExpense && !isDeletion)) { // account balance grows
+      this.currentAccount.balance += value;
+    } else { // account balance goes down
+      this.currentAccount.balance -= value;
+    }
+  }
+
+  private calculateAccountBalanceOnEdit(oldMovement: Movement, newMovement: Movement) {
+
+    if (oldMovement.isExpense) {
+      this.currentAccount.balance += oldMovement.value;
+    } else {
+      this.currentAccount.balance -= oldMovement.value;
+    }
+
+    if (newMovement.isExpense) {
+      this.currentAccount.balance -= newMovement.value;
+    } else {
+      this.currentAccount.balance += newMovement.value;
+    }
   }
 }

@@ -4,6 +4,7 @@ import { BehaviorSubject, of, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { take, tap, switchMap, map, catchError } from 'rxjs/operators';
 import { Category } from './categories/category.model';
+import { AccountsService } from '../accounts/accounts.service';
 
 interface MovementData {
   accountId: string;
@@ -17,14 +18,13 @@ interface MovementData {
 
 interface CategoryData {
   categoryName: string;
-  iconUrl: string; 
+  iconUrl: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovementsService {
-
   private baseUrl = 'https://myfinance-daam.firebaseio.com/';
   private movementsUrl = this.baseUrl + 'movements';
   private categoriesUrl = this.baseUrl + 'categories';
@@ -39,11 +39,21 @@ export class MovementsService {
   get categories() {
     return this._categories.asObservable();
   }
-  
-  constructor(private http: HttpClient) { }
 
-  addMovement(accountId: string, isExpense: boolean, description: string, categoryId: string, categoryName: string, 
-    value: number, date: Date) {
+  constructor(
+    private http: HttpClient,
+    private accountsService: AccountsService
+  ) {}
+
+  addMovement(
+    accountId: string,
+    isExpense: boolean,
+    description: string,
+    categoryId: string,
+    categoryName: string,
+    value: number,
+    date: Date
+  ) {
     let generatedId: string;
 
     const newMovement = new Movement();
@@ -54,15 +64,20 @@ export class MovementsService {
     newMovement.categoryName = categoryName;
     newMovement.value = value;
     newMovement.date = date;
-    
+
     return this.http
-      .post<{ name: string }>(
-        this.movementsUrl + '.json',
-        { ...newMovement, id: null }
-      )
+      .post<{ name: string }>(this.movementsUrl + '.json', {
+        ...newMovement,
+        id: null
+      })
       .pipe(
         switchMap(response => {
           generatedId = response.name;
+          this.accountsService.updateAccountBalanceOnAddOrDelete(
+            isExpense,
+            false,
+            value
+          );
           return this.movements;
         }),
         take(1),
@@ -73,9 +88,18 @@ export class MovementsService {
       );
   }
 
-  updateMovement(id: string, categoryId: string, categoryName: string, description: string, isExpense: boolean, value: number,
-    date: Date) {
+  updateMovement(
+    id: string,
+    categoryId: string,
+    categoryName: string,
+    description: string,
+    isExpense: boolean,
+    value: number,
+    date: Date
+  ) {
     let updatedMovements: Movement[];
+    let oldMovement: Movement;
+    let newMovement: Movement = new Movement();
     return this.movements.pipe(
       take(1),
       switchMap(movements => {
@@ -88,8 +112,7 @@ export class MovementsService {
       switchMap(movements => {
         const updatedMovementIndex = movements.findIndex(m => m.id === id);
         updatedMovements = [...movements];
-        const oldMovement = updatedMovements[updatedMovementIndex];
-        const newMovement = new Movement();
+        oldMovement = updatedMovements[updatedMovementIndex];
         newMovement.id = oldMovement.id;
         newMovement.accountId = oldMovement.accountId;
         newMovement.categoryId = categoryId;
@@ -101,38 +124,39 @@ export class MovementsService {
 
         updatedMovements[updatedMovementIndex] = newMovement;
 
-        return this.http.put(
-          this.movementsUrl + `/${id}.json`,
-          { ...updatedMovements[updatedMovementIndex], id: null }
-        );
+        return this.http
+          .put(this.movementsUrl + `/${id}.json`, {
+            ...updatedMovements[updatedMovementIndex],
+            id: null
+          });
       }),
       tap(() => {
+        this.accountsService.updateAccountBalanceOnEdit(oldMovement, newMovement);
         this._movements.next(updatedMovements);
       })
     );
   }
 
-  deleteMovement(id: string) {
-    return this.http
-      .delete(
-        this.movementsUrl + `/${id}.json`
-      )
-      .pipe(
-        switchMap(() => {
-          return this.movements;
-        }),
-        take(1),
-        tap(movements => {
-          this._movements.next(movements.filter(m => m.id !== id));
-        })
-      );
+  deleteMovement(id: string, isExpense: boolean, value: number) {
+    return this.http.delete(this.movementsUrl + `/${id}.json`).pipe(
+      switchMap(() => {
+        this.accountsService.updateAccountBalanceOnAddOrDelete(
+          isExpense,
+          true,
+          value
+        );
+        return this.movements;
+      }),
+      take(1),
+      tap(movements => {
+        this._movements.next(movements.filter(m => m.id !== id));
+      })
+    );
   }
-  
+
   getMovements() {
     return this.http
-      .get<{ [key: string]: MovementData }>(
-        this.movementsUrl + '.json'
-      )
+      .get<{ [key: string]: MovementData }>(this.movementsUrl + '.json')
       .pipe(
         map(response => {
           const movements = [];
@@ -147,9 +171,7 @@ export class MovementsService {
               newMovement.description = response[key].description;
               newMovement.value = response[key].value;
               newMovement.date = new Date(response[key].date);
-              movements.push(
-                newMovement
-              );
+              movements.push(newMovement);
             }
           }
           return movements;
@@ -161,16 +183,12 @@ export class MovementsService {
   }
 
   getMovement(id: string) {
-    return this.http
-    .get<MovementData>(
-      this.movementsUrl + `/${id}.json`
-    )
-    .pipe(
+    return this.http.get<MovementData>(this.movementsUrl + `/${id}.json`).pipe(
       map(response => {
         const newMovement = new Movement();
         newMovement.id = id;
         newMovement.accountId = response.accountId;
-        newMovement.isExpense =response.isExpense;
+        newMovement.isExpense = response.isExpense;
         newMovement.categoryId = response.categoryId;
         newMovement.categoryName = response.categoryName;
         newMovement.description = response.description;
@@ -183,24 +201,26 @@ export class MovementsService {
 
   getMovementCategories() {
     return this.http
-    .get<{ [key: string]: CategoryData }>(
-      this.categoriesUrl + '.json'
-    )
-    .pipe(
-      map(response => {
-        const categories = [];
-        for (const key in response) {
-          if (response.hasOwnProperty(key)) {
-            categories.push(
-              new Category(key, response[key].categoryName, response[key].iconUrl)
-            );
+      .get<{ [key: string]: CategoryData }>(this.categoriesUrl + '.json')
+      .pipe(
+        map(response => {
+          const categories = [];
+          for (const key in response) {
+            if (response.hasOwnProperty(key)) {
+              categories.push(
+                new Category(
+                  key,
+                  response[key].categoryName,
+                  response[key].iconUrl
+                )
+              );
+            }
           }
-        }
-        return categories;
-      }),
-      tap(categories => {
-        this._categories.next(categories);
-      })
-    );
+          return categories;
+        }),
+        tap(categories => {
+          this._categories.next(categories);
+        })
+      );
   }
 }

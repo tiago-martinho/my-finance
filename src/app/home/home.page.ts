@@ -47,9 +47,9 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  onAccountClick() {
-    console.log('clicked');
-    this.accountsService.updateAccountBalance().subscribe();
+  onAccountSelect(account: BankAccount) {
+    console.log('Selected account:' + account);
+    this.accountsService.setCurrentAccount(account);
   }
 
   ionViewWillEnter() {
@@ -68,7 +68,5 @@ export class HomePage implements OnInit, OnDestroy {
       this.accountsSub.unsubscribe();
     }
   }
-
-  
 
 }
