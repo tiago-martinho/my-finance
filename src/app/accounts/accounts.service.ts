@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { BankAccount } from './bank-account.model';
 import { switchMap, take, tap, map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 interface AccountData {
   balance: number;
@@ -17,6 +17,8 @@ interface AccountData {
 export class AccountsService {
 
   private accountsUrl = 'https://myfinance-daam.firebaseio.com/accounts';
+  private currentAccount: BankAccount = new BankAccount('-LeakS_kfR_AZVUeK_M_', 'tiagomartinho',
+  'account1', 10000);
 
   private _accounts = new BehaviorSubject<BankAccount[]>([]);
 
@@ -75,4 +77,41 @@ export class AccountsService {
       );
   }
 
+  getCurrentAccount() {
+    return this.currentAccount;
+  }
+
+  setCurrentAccount(account: BankAccount) {
+    this.currentAccount = account;
+  }
+
+  setAccountBalance(balance: number) {
+    this.currentAccount.balance = balance;
+  }
+
+  updateAccountBalance() {
+    let updatedAccounts: BankAccount[];
+    return this.accounts.pipe(
+      take(1),
+      switchMap(accounts => {
+        if (!accounts || accounts.length === 0) {
+          return this.getAccounts()
+        } else {
+          return of(accounts);
+        }
+      }),
+      switchMap(accounts => {
+        const updatedAccountIndex = accounts.findIndex(a => a.id === this.currentAccount.id);
+        updatedAccounts = [...accounts];
+        updatedAccounts[updatedAccountIndex] = this.currentAccount;
+        return this.http.put(
+          `${this.accountsUrl}/${this.currentAccount.id}.json`,
+          {...updatedAccounts[updatedAccountIndex], id: null}
+        );
+      }),
+      tap(() => {
+        this._accounts.next(updatedAccounts);
+      })
+    )
+  }
 }

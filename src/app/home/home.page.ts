@@ -47,6 +47,11 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  onAccountClick() {
+    console.log('clicked');
+    this.accountsService.updateAccountBalance().subscribe();
+  }
+
   ionViewWillEnter() {
     this.isLoading = true;
     this.accountsService.getAccounts().subscribe(() => {
