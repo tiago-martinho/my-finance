@@ -46,7 +46,6 @@ export class MovementsService {
   ) {}
 
   addMovement(
-    accountId: string,
     isExpense: boolean,
     description: string,
     categoryId: string,
@@ -57,7 +56,7 @@ export class MovementsService {
     let generatedId: string;
 
     const newMovement = new Movement();
-    newMovement.accountId = accountId;
+    newMovement.accountId = this.accountsService.getCurrentAccount().id;
     newMovement.isExpense = isExpense;
     newMovement.description = description;
     newMovement.categoryId = categoryId;
@@ -99,7 +98,7 @@ export class MovementsService {
   ) {
     let updatedMovements: Movement[];
     let oldMovement: Movement;
-    let newMovement: Movement = new Movement();
+    const newMovement: Movement = new Movement();
     return this.movements.pipe(
       take(1),
       switchMap(movements => {

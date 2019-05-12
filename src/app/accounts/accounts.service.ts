@@ -18,8 +18,7 @@ interface AccountData {
 export class AccountsService {
 
   private accountsUrl = 'https://myfinance-daam.firebaseio.com/accounts';
-  private currentAccount: BankAccount = new BankAccount('-LeakS_kfR_AZVUeK_M_', 'tiagomartinho',
-  'account1', 10000);
+  private currentAccount: BankAccount;
 
   private _accounts = new BehaviorSubject<BankAccount[]>([]);
 

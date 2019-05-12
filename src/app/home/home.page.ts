@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  accounts: BankAccount[];
+  accounts: BankAccount[] = [];
   isLoading = false;
   private accountsSub: Subscription;
 
@@ -43,12 +43,15 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
-      this.accounts = accounts;
+      if (accounts.length > 0) {
+        this.accountsService.setCurrentAccount(accounts[0]);
+        this.accounts = accounts;
+      }     
     });
   }
 
   onAccountSelect(account: BankAccount) {
-    console.log('Selected account:' + account);
+    console.log('Selected account:' + account.name);
     this.accountsService.setCurrentAccount(account);
   }
 

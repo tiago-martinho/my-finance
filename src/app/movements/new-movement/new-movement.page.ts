@@ -33,7 +33,6 @@ export class NewMovementPage extends MovementDetail implements OnInit {
         console.log(this.form);
         this.movementsService
           .addMovement(
-            'accountId1',
             this.form.value.type === 'expense' ? true : false,
             this.form.value.description,
             this.category.id,
