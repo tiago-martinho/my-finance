@@ -45,7 +45,8 @@ const routes: Routes = [
     loadChildren:
       './movements/edit-movement/edit-movement.module#EditMovementPageModule',
     canLoad: [AuthGuard]
-  }
+  },  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' }
+
 ];
 
 @NgModule({

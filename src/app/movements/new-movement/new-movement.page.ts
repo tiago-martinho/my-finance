@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MovementsService } from '../movements.service';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { Category } from '../categories/category.model';
 import { MovementDetail } from '../movement-detail';
 
 @Component({

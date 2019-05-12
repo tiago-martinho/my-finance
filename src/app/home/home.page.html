@@ -11,37 +11,48 @@
   <ion-grid>
     <ion-row>
       <ion-col size="8" offset="2">
-        <ion-text>
-          <h4>Accounts</h4>
-        </ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="border" size="8" offset="2" padding>
-        <ion-button>
-          
-        </ion-button>
-        <ion-text padding>
-          
-        </ion-text>
+        <div *ngIf="isLoading" text-center>
+          <ion-spinner color="primary"></ion-spinner>
+        </div>
+        <div text-center *ngIf="!isLoading && accounts.length === 0">
+          <p>
+            No accounts found! Please create one first!
+            <ion-button color="primary" routerLink="/new-account"
+              >New Account</ion-button
+            >
+          </p>
+        </div>
+        <ion-list *ngIf="!isLoading && accounts.length > 0">
+          <ion-label class="ion-text-center ion-margin">
+            <h1>Accounts</h1>
+          </ion-label>
+          <div class="border">
+            <ion-item
+              *ngFor="let account of accounts"
+              lines="none"
+            >
+              <ion-button>{{ account.name }}</ion-button>
+              <ion-label position="fixed">
+                &nbsp;&nbsp;{{ account.balance | currency: 'EUR':'symbol' }}
+              </ion-label>
+            </ion-item>
+          </div>
+        </ion-list>
       </ion-col>
     </ion-row>
 
-    <ion-row style="margin-top: 30px">
+    <!-- <ion-row style="margin-top: 30px">
       <canvas
-          baseChart
-          [chartType]="'line'"
-          [datasets]="chartData"
-          [labels]="chartLabels"
-          [options]="chartOptions"
-          [legend]="false"
-          [colors]="myColors"
-          (chartClick)="onChartClick($event)">
+        baseChart
+        [chartType]="'line'"
+        [datasets]="chartData"
+        [labels]="chartLabels"
+        [options]="chartOptions"
+        [legend]="false"
+        [colors]="myColors"
+        (chartClick)="onChartClick($event)"
+      >
       </canvas>
-    </ion-row>
-
+    </ion-row> -->
   </ion-grid>
-
-
-
 </ion-content>

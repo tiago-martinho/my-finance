@@ -1,13 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { AccountsService } from '../accounts/accounts.service';
+import { Router } from '@angular/router';
+import { BankAccount } from '../accounts/bank-account.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
-  account = {};
+  accounts: BankAccount[];
+  isLoading = false;
+  private accountsSub: Subscription;
 
   chartOptions = {
     responsive: true,
@@ -33,15 +39,31 @@ export class HomePage implements OnInit {
     },
   ];
 
+  constructor(private accountsService: AccountsService, private router: Router) {}
+
+  ngOnInit() {
+    this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
+      this.accounts = accounts;
+    });
+  }
+
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.accountsService.getAccounts().subscribe(() => {
+      this.isLoading = false;
+    });
+  }
+
   onChartClick(event) {
     console.log(event);
   }
 
-  constructor() {}
-
-  ngOnInit() {
-    
-
+  ngOnDestroy() {
+    if (this.accountsSub) {
+      this.accountsSub.unsubscribe();
+    }
   }
+
+  
 
 }
