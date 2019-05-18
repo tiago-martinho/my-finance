@@ -31,7 +31,7 @@ export class AccountsService {
   addAccount(name: string, balance: number) {
     let generatedId;
 
-    const newBankAccount = new BankAccount(null, this.auth.userId, name, balance);
+    const newBankAccount = new BankAccount(null, "DUMMY USER", name, balance);
 
     return this.http
     .post<{ name: string }>(

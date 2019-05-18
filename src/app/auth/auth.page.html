@@ -5,10 +5,10 @@
 </ion-header>
 
 <ion-content padding>
-  <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-grid>
       <ion-row>
-        <ion-col size-md="6" offset-md="3">
+        <ion-col size-sm="6" offset-sm="3">
           <ion-list>
             <ion-item>
               <ion-label position="floating">E-Mail</ion-label>
@@ -44,24 +44,29 @@
               *ngIf="!passwordCtrl.valid && passwordCtrl.touched"
               lines="none"
             >
-            <ion-label>
-              Should at least be 6 characters long.
-            </ion-label>
+              <ion-label>
+                Should at least be 6 characters long.
+              </ion-label>
             </ion-item>
           </ion-list>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-md="6" offset-md="3">
-          <ion-button color="primary" fill="clear" expand="block" type="button" (click)="onSwitchAuthMode()">
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-button
+            type="button"
+            color="primary"
+            fill="clear"
+            expand="block"
+            (click)="onSwitchAuthMode()"
+          >
             Switch to {{ isLogin ? 'Signup' : 'Login' }}
           </ion-button>
           <ion-button
-            color="primary"
-            (click)="onLogin()"
-            expand="block"
             type="submit"
-            [disabled]="!form.valid"
+            color="primary"
+            expand="block"
+            [disabled]="!f.valid"
           >
             {{ isLogin ? 'Login' : 'Signup' }}
           </ion-button>
@@ -69,4 +74,8 @@
       </ion-row>
     </ion-grid>
   </form>
+
+  <!-- <div text-center>
+    <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
+  </div> -->
 </ion-content>
