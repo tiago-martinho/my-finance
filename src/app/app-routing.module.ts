@@ -30,11 +30,6 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'settings',
-    loadChildren: './settings/settings.module#SettingsPageModule',
-    canLoad: [AuthGuard]
-  },
-  {
     path: 'new-movement',
     loadChildren:
       './movements/new-movement/new-movement.module#NewMovementPageModule',
@@ -45,7 +40,8 @@ const routes: Routes = [
     loadChildren:
       './movements/edit-movement/edit-movement.module#EditMovementPageModule',
     canLoad: [AuthGuard]
-  },  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' }
+  },
+  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' }
 
 ];
 

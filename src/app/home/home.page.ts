@@ -44,9 +44,9 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
       if (accounts.length > 0) {
-        this.accountsService.setCurrentAccount(accounts[0]);
+        this.accountsService.setCurrentAccount(accounts[0]); // sets the first user account has the currently selected one if there's any
         this.accounts = accounts;
-      }     
+      } 
     });
   }
 
