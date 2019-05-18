@@ -16,7 +16,6 @@ interface AccountData {
   providedIn: 'root'
 })
 export class AccountsService {
-
   private accountsUrl = 'https://myfinance-daam.firebaseio.com/accounts';
   private currentAccount: BankAccount;
 
@@ -26,55 +25,69 @@ export class AccountsService {
     return this._accounts.asObservable();
   }
 
-  constructor(private http: HttpClient, private auth: AuthService) { }
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   addAccount(name: string, balance: number) {
     let generatedId;
 
-    const newBankAccount = new BankAccount(null, "DUMMY USER", name, balance);
+    const newBankAccount = new BankAccount(null, 'DUMMY USER', name, balance);
 
     return this.http
-    .post<{ name: string }>(
-      this.accountsUrl + '.json',
-      { ...newBankAccount, id: null }
-    )
-    .pipe(
-      switchMap(response => {
-        generatedId = response.name;
-        return this.accounts;
-      }),
-      take(1),
-      tap(accounts => {
-        newBankAccount.id = generatedId;
-        this._accounts.next(accounts.concat(newBankAccount));
+      .post<{ name: string }>(this.accountsUrl + '.json', {
+        ...newBankAccount,
+        id: null
       })
-    );
+      .pipe(
+        switchMap(response => {
+          generatedId = response.name;
+          return this.accounts;
+        }),
+        take(1),
+        tap(accounts => {
+          newBankAccount.id = generatedId;
+          this._accounts.next(accounts.concat(newBankAccount));
+        })
+      );
   }
 
   getAccounts() {
-    return this.http
-      .get<{ [key: string]: AccountData }>(this.accountsUrl + '.json')
-      .pipe(
-        map(response => {
-          const accounts = [];
-          for (const key in response) {
-            if (response.hasOwnProperty(key)) {
-              accounts.push(
-                new BankAccount(
-                  key,
-                  response[key].userId,
-                  response[key].name,
-                  response[key].balance
-                )
-              );
-            }
+    let fetchedUserId: string;
+    return this.auth.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('User not found!');
+        }
+        fetchedUserId = userId;
+        return this.auth.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http.get<{ [key: string]: AccountData }>(
+          this.accountsUrl +
+            `.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+        );
+      }),
+      map(response => {
+        const accounts = [];
+        for (const key in response) {
+          if (response.hasOwnProperty(key)) {
+            accounts.push(
+              new BankAccount(
+                key,
+                response[key].userId,
+                response[key].name,
+                response[key].balance
+              )
+            );
           }
-          return accounts;
-        }),
-        tap(accounts => {
-          this._accounts.next(accounts);
-        })
-      );
+        }
+        return accounts;
+      }),
+      tap(accounts => {
+        this._accounts.next(accounts);
+      })
+    );
   }
 
   getCurrentAccount() {
@@ -89,7 +102,11 @@ export class AccountsService {
     this.currentAccount.balance = balance;
   }
 
-  updateAccountBalanceOnAddOrDelete(isExpense: boolean, isDeletion: boolean, value: number) {
+  updateAccountBalanceOnAddOrDelete(
+    isExpense: boolean,
+    isDeletion: boolean,
+    value: number
+  ) {
     this.calculateAccountBalanceOnAddOrDelete(isExpense, isDeletion, value);
     this.updateAccountBalance().subscribe();
   }
@@ -97,7 +114,6 @@ export class AccountsService {
   updateAccountBalanceOnEdit(oldMovement: Movement, newMovement: Movement) {
     this.calculateAccountBalanceOnEdit(oldMovement, newMovement);
     this.updateAccountBalance().subscribe();
-
   }
 
   private updateAccountBalance() {
@@ -106,18 +122,20 @@ export class AccountsService {
       take(1),
       switchMap(accounts => {
         if (!accounts || accounts.length === 0) {
-          return this.getAccounts()
+          return this.getAccounts();
         } else {
           return of(accounts);
         }
       }),
       switchMap(accounts => {
-        const updatedAccountIndex = accounts.findIndex(a => a.id === this.currentAccount.id);
+        const updatedAccountIndex = accounts.findIndex(
+          a => a.id === this.currentAccount.id
+        );
         updatedAccounts = [...accounts];
         updatedAccounts[updatedAccountIndex] = this.currentAccount;
         return this.http.put(
           `${this.accountsUrl}/${this.currentAccount.id}.json`,
-          {...updatedAccounts[updatedAccountIndex], id: null}
+          { ...updatedAccounts[updatedAccountIndex], id: null }
         );
       }),
       tap(() => {
@@ -126,16 +144,24 @@ export class AccountsService {
     );
   }
 
-  private calculateAccountBalanceOnAddOrDelete(isExpense: boolean, isDeletion: boolean, value: number) {
-    if ( (isExpense && isDeletion) || (!isExpense && !isDeletion)) { // account balance grows
+  private calculateAccountBalanceOnAddOrDelete(
+    isExpense: boolean,
+    isDeletion: boolean,
+    value: number
+  ) {
+    if ((isExpense && isDeletion) || (!isExpense && !isDeletion)) {
+      // account balance grows
       this.currentAccount.balance += value;
-    } else { // account balance goes down
+    } else {
+      // account balance goes down
       this.currentAccount.balance -= value;
     }
   }
 
-  private calculateAccountBalanceOnEdit(oldMovement: Movement, newMovement: Movement) {
-
+  private calculateAccountBalanceOnEdit(
+    oldMovement: Movement,
+    newMovement: Movement
+  ) {
     if (oldMovement.isExpense) {
       this.currentAccount.balance += oldMovement.value;
     } else {
