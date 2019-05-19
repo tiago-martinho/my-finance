@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { BankAccount } from '../accounts/bank-account.model';
 import { Subscription } from 'rxjs';
 import { AlertController } from '@ionic/angular';
+import { MovementsService } from '../movements/movements.service';
+import { Movement } from '../movements/movement.model';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +16,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   accounts: BankAccount[] = [];
   selectedAccount: BankAccount;
+  latestMovements: Movement[];
   isLoading = false;
   private accountsSub: Subscription;
 
@@ -41,7 +44,8 @@ export class HomePage implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private accountsService: AccountsService, private router: Router, private alertCtrl: AlertController) {}
+  constructor(private accountsService: AccountsService, private router: Router, private alertCtrl: AlertController,
+    private movementsService: MovementsService) {}
 
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
@@ -50,14 +54,28 @@ export class HomePage implements OnInit, OnDestroy {
         this.accountsService.setCurrentAccount(accounts[0]);
         this.selectedAccount = accounts[0];
         this.accounts = accounts;
+        this.getLatestMovements();
       }
     });
+  }
+
+  //latest movements, from 30 days ago to the present
+  getLatestMovements() {
+    const currentDate = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 30);
+
+   this.movementsService.getMovements().subscribe((movements) => {
+         this.latestMovements = movements.filter((movement: Movement) => movement.date >= pastDate && movement.date <= currentDate);
+         console.log(this.latestMovements);
+    });
+
   }
 
   onAccountSelect(account: BankAccount) {
     this.accountsService.setCurrentAccount(account);
     this.selectedAccount = account;
-    console.log(this.accountsService.getCurrentAccount());
+    this.getLatestMovements();
   }
 
   ionViewWillEnter() {

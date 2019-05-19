@@ -191,7 +191,6 @@ export class MovementsService {
   getMovements() {
     let fetchedUserId: string;
     const currentAccount = this.accountsService.getCurrentAccount();
-    console.log(currentAccount);
 
     return this.auth.userId.pipe(
       take(1),

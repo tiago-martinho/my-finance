@@ -17,7 +17,7 @@ export class AccountDetail implements OnInit {
     this.form = new FormGroup({
       name: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(15)]
+        validators: [Validators.required, Validators.maxLength(10)]
       }),
       balance: new FormControl(null, {
         updateOn: 'blur',
