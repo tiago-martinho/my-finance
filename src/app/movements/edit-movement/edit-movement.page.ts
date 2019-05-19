@@ -35,7 +35,6 @@ export class EditMovementPage extends MovementDetail
     
   ) {
     super(movementsService, router, loadingCtrl, modalCtrl);
-    console.log('child constructor');
   }
 
   ngOnInit() {
@@ -76,7 +75,6 @@ export class EditMovementPage extends MovementDetail
         );
     });
     super.ngOnInit();
-    console.log('child init');
   }
 
   setFormValues(movement: Movement) {

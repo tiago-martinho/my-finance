@@ -16,7 +16,6 @@ export class MovementDetail implements OnInit {
     protected loadingCtrl: LoadingController,
     protected modalCtrl: ModalController
   ) {
-    console.log('parent constructor')
   }
 
   ngOnInit() {

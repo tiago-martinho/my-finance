@@ -5,7 +5,6 @@ import { BankAccount } from './bank-account.model';
 import { switchMap, take, tap, map } from 'rxjs/operators';
 import { BehaviorSubject, of, from } from 'rxjs';
 import { Movement } from '../movements/movement.model';
-import { Plugins } from '@capacitor/core';
 
 interface AccountData {
   balance: number;
@@ -25,8 +24,7 @@ export class AccountsService {
     return this._accounts.asObservable();
   }
 
-  constructor(private http: HttpClient, private auth: AuthService) {
-  }
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   getCurrentAccount(): BankAccount {
     return JSON.parse(localStorage.getItem('currentAccount')) as BankAccount;
@@ -39,7 +37,7 @@ export class AccountsService {
   addAccount(name: string, balance: number) {
     let generatedId: string;
     let fetchedUserId: string;
-    let newBankAccount: BankAccount;
+    const newBankAccount = new BankAccount();
 
     return this.auth.userId.pipe(
       take(1),
@@ -52,7 +50,9 @@ export class AccountsService {
         if (!fetchedUserId) {
           throw new Error('No user found!');
         }
-        newBankAccount = new BankAccount(null, fetchedUserId, name, balance);
+        newBankAccount.userId = fetchedUserId;
+        newBankAccount.name = name;
+        newBankAccount.balance = balance;
         return this.http
           .post<{ name: string }>(`${this.accountsUrl}.json?auth=${token}`, {
             ...newBankAccount,
@@ -69,6 +69,26 @@ export class AccountsService {
               this._accounts.next(accounts.concat(accounts));
             })
           );
+      })
+    );
+  }
+
+  getAccount(id: string) {
+    return this.auth.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.get<AccountData>(
+          `${this.accountsUrl}/${id}.json?auth=${token}`
+        );
+      }),
+      map(response => {
+        const newAccount = new BankAccount();
+        newAccount.id = id;
+        newAccount.userId = response.userId;
+        newAccount.name = response.name;
+        newAccount.balance = response.balance;
+
+        return newAccount;
       })
     );
   }
@@ -95,20 +115,78 @@ export class AccountsService {
         const accounts = [];
         for (const key in response) {
           if (response.hasOwnProperty(key)) {
-            accounts.push(
-              new BankAccount(
-                key,
-                response[key].userId,
-                response[key].name,
-                response[key].balance
-              )
-            );
+            const newAccount = new BankAccount();
+            newAccount.id = key;
+            newAccount.userId = response[key].userId;
+            newAccount.name = response[key].name;
+            newAccount.balance = response[key].balance;
+            accounts.push(newAccount);
           }
         }
         return accounts;
       }),
       tap(accounts => {
         this._accounts.next(accounts);
+      })
+    );
+  }
+
+  updateAccount(id: string, name: string, balance: number) {
+    let updatedAccounts: BankAccount[];
+    let oldAccount: BankAccount;
+    let fetchedToken: string;
+    const newAccount: BankAccount = new BankAccount();
+
+    return this.auth.token.pipe(
+      take(1),
+      switchMap(token => {
+        fetchedToken = token;
+        return this.accounts;
+      }),
+      take(1),
+      switchMap(accounts => {
+        if (!accounts || accounts.length <= 0) {
+          return this.getAccounts();
+        } else {
+          return of(accounts);
+        }
+      }),
+      switchMap(accounts => {
+        const updatedAccountIndex = accounts.findIndex(a => a.id === id);
+        updatedAccounts = [...accounts];
+        oldAccount = updatedAccounts[updatedAccountIndex];
+        newAccount.id = oldAccount.id;
+        newAccount.userId = oldAccount.userId;
+        newAccount.name = name;
+        newAccount.balance = balance;
+
+        updatedAccounts[updatedAccountIndex] = newAccount;
+
+        return this.http.put(
+          `${this.accountsUrl}/${id}.json?auth=${fetchedToken}`,
+          {
+            ...updatedAccounts[updatedAccountIndex],
+            id: null
+          }
+        );
+      })
+    );
+  }
+
+  deleteAccount(id: string) {
+    return this.auth.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.delete(
+          `${this.accountsUrl}/${id}.json?auth=${token}`
+        );
+      }),
+      switchMap(() => {
+        return this.accounts;
+      }),
+      take(1),
+      tap(accounts => {
+        this._accounts.next(accounts.filter(a => a.id !== id));
       })
     );
   }
@@ -143,7 +221,7 @@ export class AccountsService {
         if (!accounts || accounts.length <= 0) {
           return this.getAccounts();
         } else {
-          return of (accounts);
+          return of(accounts);
         }
       }),
       switchMap(accounts => {

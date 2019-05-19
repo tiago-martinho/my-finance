@@ -40,12 +40,6 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.router.navigateByUrl('new-movement');
   }
 
-  onEdit(movementId: string, slidingItem: IonItemSliding) {
-    slidingItem.close();
-    this.router.navigate(['/', 'new-movements', movementId]);
-    console.log('Editing item ' + movementId);
-  }
-
   //This function groups and orders the movements by year-month in order to create headers in the list presented in the view
   groupMovements(movements: Movement[]) {
 

@@ -16,7 +16,6 @@ export class NewMovementPage extends MovementDetail implements OnInit {
     protected loadingCtrl: LoadingController,
     protected modalCtrl: ModalController) {
       super(movementsService, router, loadingCtrl, modalCtrl);
-      console.log('In new');
      }
 
 

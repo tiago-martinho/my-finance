@@ -3,7 +3,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { Router } from '@angular/router';
 import { BankAccount } from '../accounts/bank-account.model';
 import { Subscription } from 'rxjs';
-import { Plugins } from '@capacitor/core';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +13,7 @@ import { Plugins } from '@capacitor/core';
 export class HomePage implements OnInit, OnDestroy {
 
   accounts: BankAccount[] = [];
+  selectedAccount: BankAccount;
   isLoading = false;
   private accountsSub: Subscription;
 
@@ -40,13 +41,14 @@ export class HomePage implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private accountsService: AccountsService, private router: Router) {}
+  constructor(private accountsService: AccountsService, private router: Router, private alertCtrl: AlertController) {}
 
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
       if (accounts.length > 0) {
         // sets the first account as default
         this.accountsService.setCurrentAccount(accounts[0]);
+        this.selectedAccount = accounts[0];
         this.accounts = accounts;
       }
     });
@@ -54,6 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   onAccountSelect(account: BankAccount) {
     this.accountsService.setCurrentAccount(account);
+    this.selectedAccount = account;
     console.log(this.accountsService.getCurrentAccount());
   }
 
@@ -64,8 +67,33 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  onEditAccount() {
+    this.router.navigateByUrl('/edit-account/' + this.selectedAccount.id);
+  }
+
   onChartClick(event) {
     console.log(event);
+  }
+
+  async onNewAccount() {
+    if (this.accounts.length >= 3) {
+      await this.alertCtrl.create({
+        header: 'No more accounts are allowed',
+        message: 'You can only have up to 3 bank accounts associated with your user account.',
+        buttons: [
+          {
+            text: 'Ok',
+            handler: () => {
+              console.log('canceled');
+            }
+          },
+        ]
+      }).then(alertElement => {
+        alertElement.present();
+      });
+    } else {
+      this.router.navigateByUrl('new-account');
+    }
   }
 
   ngOnDestroy() {

@@ -14,12 +14,12 @@
 
 <ion-content>
   <form [formGroup]="form">
-    <ion-grid>
+      <div *ngIf="isLoading" text-center>
+          <ion-spinner color="primary"></ion-spinner>
+        </div>
+    <ion-grid *ngIf="!isLoading">
       <ion-row class="ion-margin-top">
         <ion-col size="12">
-          <div *ngIf="isLoading" text-center>
-            <ion-spinner color="primary"></ion-spinner>
-          </div>
           <ion-item>
             <ion-label position="floating">
               Movement type

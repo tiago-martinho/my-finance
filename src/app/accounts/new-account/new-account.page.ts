@@ -3,30 +3,18 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import { AccountsService } from '../accounts.service';
 import { Router } from '@angular/router';
+import { AccountDetail } from '../account-detail';
 
 @Component({
   selector: 'app-new-account',
   templateUrl: './new-account.page.html',
   styleUrls: ['./new-account.page.scss'],
 })
-export class NewAccountPage implements OnInit {
+export class NewAccountPage extends AccountDetail implements OnInit {
 
-  form: FormGroup;
-
-  constructor(private loadingCtrl: LoadingController, private accountsService: AccountsService, private router: Router) { }
-
-  ngOnInit() {
-    this.form = new FormGroup({
-      name: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      balance: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(1)]
-      })
-    });
-  }
+  constructor(protected loadingCtrl: LoadingController, protected accountsService: AccountsService, protected router: Router) {
+    super(loadingCtrl, accountsService, router);
+   }
 
   onCreateAccount() {
     if (!this.form.valid) {

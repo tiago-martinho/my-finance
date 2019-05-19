@@ -41,7 +41,9 @@ const routes: Routes = [
       './movements/edit-movement/edit-movement.module#EditMovementPageModule',
     canLoad: [AuthGuard]
   },
-  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' }
+  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' },
+  { path: 'edit-account/:accountId', loadChildren: './accounts/edit-account/edit-account.module#EditAccountPageModule' }
+
 
 ];
 
