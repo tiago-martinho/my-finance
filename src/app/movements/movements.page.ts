@@ -5,6 +5,7 @@ import { MovementsService } from './movements.service';
 import * as _ from 'lodash';
 import { IonItemSliding } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { AccountsService } from '../accounts/accounts.service';
 
 @Component({
   selector: 'app-movements',
@@ -32,7 +33,7 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
       this.groupMovements(res);
       this.isLoading = false;
-  });
+    });
   }
 
   onNewMovement() {

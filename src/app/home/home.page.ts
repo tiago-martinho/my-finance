@@ -3,6 +3,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { Router } from '@angular/router';
 import { BankAccount } from '../accounts/bank-account.model';
 import { Subscription } from 'rxjs';
+import { Plugins } from '@capacitor/core';
 
 @Component({
   selector: 'app-home',
@@ -44,15 +45,16 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
       if (accounts.length > 0) {
-        this.accountsService.setCurrentAccount(accounts[0]); // sets the first user account has the currently selected one if there's any
+        // sets the first account as default
+        this.accountsService.setCurrentAccount(accounts[0]);
         this.accounts = accounts;
-      } 
+      }
     });
   }
 
   onAccountSelect(account: BankAccount) {
-    console.log('Selected account:' + account.name);
     this.accountsService.setCurrentAccount(account);
+    console.log(this.accountsService.getCurrentAccount());
   }
 
   ionViewWillEnter() {
