@@ -14,6 +14,7 @@
         <div *ngIf="isLoading" text-center>
           <ion-spinner color="primary"></ion-spinner>
         </div>
+
         <div text-center *ngIf="!isLoading && accounts.length === 0">
           <p>
             No accounts found! Please create one first!
@@ -29,11 +30,23 @@
           <div class="border">
             <ion-item
               *ngFor="let account of accounts"
-              lines="none"
+              lines="inset"
+              detail
+              button
+              [class.selected]="account === selectedAccount"
+              (click)="onAccountSelect(account, $event.srcElement)"
             >
-              <ion-button (click)="onAccountSelect(account)">{{ account.name }}</ion-button>
-              <ion-label position="fixed">
+                <!-- This is needed so the first account is selected by default -->
+                <!-- <span *ngIf="isFirst"><ion-button color="primary" (click)="onAccountSelect(account, $event.srcElement)">{{ account.name }}</ion-button></span>
+                <span *ngIf="!isFirst"><ion-button color="light" (click)="onAccountSelect(account, $event.srcElement)">{{ account.name }}</ion-button></span> -->
+              <!-- <ion-label position="fixed">
                 &nbsp;&nbsp;{{ account.balance | currency: 'EUR':'symbol' }}
+              </ion-label> -->
+              <ion-label>
+                {{ account.name }}
+              </ion-label>
+              <ion-label>
+                {{ account.balance | currency: 'EUR':'symbol'}}
               </ion-label>
             </ion-item>
           </div>
@@ -41,10 +54,8 @@
       </ion-col>
     </ion-row>
 
-    <ion-button color="primary" (click)="onNewAccount()"
-    >New Account</ion-button>
 
-    <ion-button color="secondary" (click)="onEditAccount()">Edit Account</ion-button>
+    <ion-button *ngIf="!isLoading" color="secondary" (click)="onEditAccount()">Edit Account</ion-button>
   
 
     <!-- <ion-row style="margin-top: 30px">
@@ -61,4 +72,10 @@
       </canvas>
     </ion-row> -->
   </ion-grid>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="onNewAccount()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

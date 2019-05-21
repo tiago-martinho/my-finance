@@ -1,18 +1,25 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit
+} from '@angular/core';
 import { AccountsService } from '../accounts/accounts.service';
 import { Router } from '@angular/router';
 import { BankAccount } from '../accounts/bank-account.model';
 import { Subscription } from 'rxjs';
-import { AlertController } from '@ionic/angular';
+import { AlertController, IonButton, IonItem, IonLabel } from '@ionic/angular';
 import { MovementsService } from '../movements/movements.service';
 import { Movement } from '../movements/movement.model';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  styleUrls: ['home.page.scss']
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage
+  implements OnInit, OnDestroy {
 
   accounts: BankAccount[] = [];
   selectedAccount: BankAccount;
@@ -26,13 +33,10 @@ export class HomePage implements OnInit, OnDestroy {
   };
 
   //change with movements data
-  chartData = [
-    { data: [330, 600, 260, 700],  fill: false }
-  ];
+  chartData = [{ data: [330, 600, 260, 700], fill: false }];
 
   //change (last 30 days)
   chartLabels = ['January', 'February', 'March', 'April'];
-
 
   myColors = [
     {
@@ -41,11 +45,15 @@ export class HomePage implements OnInit, OnDestroy {
       pointBorderColor: '#406dff',
       pointHoverBackgroundColor: '#406dff',
       pointHoverBorderColor: '#fffff'
-    },
+    }
   ];
 
-  constructor(private accountsService: AccountsService, private router: Router, private alertCtrl: AlertController,
-    private movementsService: MovementsService) {}
+  constructor(
+    private accountsService: AccountsService,
+    private router: Router,
+    private alertCtrl: AlertController,
+    private movementsService: MovementsService
+  ) {}
 
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
@@ -65,17 +73,13 @@ export class HomePage implements OnInit, OnDestroy {
     const pastDate = new Date();
     pastDate.setDate(pastDate.getDate() - 30);
 
-   this.movementsService.getMovements().subscribe((movements) => {
-         this.latestMovements = movements.filter((movement: Movement) => movement.date >= pastDate && movement.date <= currentDate);
-         console.log(this.latestMovements);
+    this.movementsService.getMovements().subscribe(movements => {
+      this.latestMovements = movements.filter(
+        (movement: Movement) =>
+          movement.date >= pastDate && movement.date <= currentDate
+      );
+      console.log(this.latestMovements);
     });
-
-  }
-
-  onAccountSelect(account: BankAccount) {
-    this.accountsService.setCurrentAccount(account);
-    this.selectedAccount = account;
-    this.getLatestMovements();
   }
 
   ionViewWillEnter() {
@@ -84,6 +88,19 @@ export class HomePage implements OnInit, OnDestroy {
       this.isLoading = false;
     });
   }
+
+  onAccountSelect(account: BankAccount, item: IonItem) {
+      // const elements = document.querySelectorAll( 'div > ion-item' );
+      // console.log(elements);
+      // elements.forEach(element => {
+      //   (element as unknown as IonItem).color = 'light';
+      // });
+  
+      this.accountsService.setCurrentAccount(account);
+      this.selectedAccount = account;
+      this.getLatestMovements();
+  }
+
 
   onEditAccount() {
     this.router.navigateByUrl('/edit-account/' + this.selectedAccount.id);
@@ -95,20 +112,23 @@ export class HomePage implements OnInit, OnDestroy {
 
   async onNewAccount() {
     if (this.accounts.length >= 3) {
-      await this.alertCtrl.create({
-        header: 'No more accounts are allowed',
-        message: 'You can only have up to 3 bank accounts associated with your user account.',
-        buttons: [
-          {
-            text: 'Ok',
-            handler: () => {
-              console.log('canceled');
+      await this.alertCtrl
+        .create({
+          header: 'No more accounts are allowed',
+          message:
+            'You can only have up to 3 bank accounts associated with your user account.',
+          buttons: [
+            {
+              text: 'Ok',
+              handler: () => {
+                console.log('canceled');
+              }
             }
-          },
-        ]
-      }).then(alertElement => {
-        alertElement.present();
-      });
+          ]
+        })
+        .then(alertElement => {
+          alertElement.present();
+        });
     } else {
       this.router.navigateByUrl('new-account');
     }
@@ -119,5 +139,4 @@ export class HomePage implements OnInit, OnDestroy {
       this.accountsSub.unsubscribe();
     }
   }
-
 }

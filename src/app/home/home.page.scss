@@ -2,3 +2,8 @@
 .border {
   border: thin solid rgb(128, 128, 128);
 }
+
+.selected {
+  --ion-background-color: #406dff !important;
+  color: #ffffff;
+}
