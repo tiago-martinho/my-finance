@@ -3,8 +3,30 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>statistics</ion-title>
+    <ion-title>Statistics</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content> .
+  <ion-grid>
+    <ion-row class="ion-margin-top">
+      <ion-col size="">
+        <ion-item>
+          <ion-label position="floating">
+            Period
+          </ion-label>
+          <ion-select
+           value="month"
+            placeholder="Select a movement type"
+            required
+          >
+            <ion-select-option value="month">Last Month</ion-select-option>
+            <ion-select-option value="year">Last Year</ion-select-option>
+            <ion-select-option value="total">Total</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>
