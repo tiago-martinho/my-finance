@@ -61,10 +61,16 @@
               <ion-icon slot="start" name="create"></ion-icon>Edit Account</ion-button>
       </ion-col>
     </ion-row>
-      
-  
 
-    <!-- <ion-row style="margin-top: 30px">
+    <ion-row class="ion-margin-top">
+      <ion-col size="8" offset="2">
+          <h1>
+            Últimos Movimentos
+          </h1>
+      </ion-col>
+    </ion-row>
+      
+    <ion-row class="ion-margin-top">
       <canvas
         baseChart
         [chartType]="'line'"
@@ -76,7 +82,7 @@
         (chartClick)="onChartClick($event)"
       >
       </canvas>
-    </ion-row> -->
+    </ion-row>
   </ion-grid>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

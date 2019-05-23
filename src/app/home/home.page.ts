@@ -2,16 +2,16 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  AfterViewInit
+  ViewChild,
 } from '@angular/core';
 import { AccountsService } from '../accounts/accounts.service';
 import { Router } from '@angular/router';
 import { BankAccount } from '../accounts/bank-account.model';
 import { Subscription } from 'rxjs';
-import { AlertController, IonButton, IonItem, IonLabel } from '@ionic/angular';
+import { AlertController, IonItem } from '@ionic/angular';
 import { MovementsService } from '../movements/movements.service';
 import { Movement } from '../movements/movement.model';
-import { forEach } from '@angular/router/src/utils/collection';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +23,8 @@ export class HomePage
 
   accounts: BankAccount[] = [];
   selectedAccount: BankAccount;
-  latestMovements: Movement[];
+  latestValues: number[] = [];
+  chartLabels: string[] = [];
   isLoading = false;
   private accountsSub: Subscription;
 
@@ -33,10 +34,7 @@ export class HomePage
   };
 
   //change with movements data
-  chartData = [{ data: [330, 600, 260, 700], fill: false }];
-
-  //change (last 30 days)
-  chartLabels = ['January', 'February', 'March', 'April'];
+  chartData = [{ data: this.latestValues, fill: false }];
 
   myColors = [
     {
@@ -48,6 +46,8 @@ export class HomePage
     }
   ];
 
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+  
   constructor(
     private accountsService: AccountsService,
     private router: Router,
@@ -67,18 +67,46 @@ export class HomePage
     });
   }
 
+  private setChartValues(latestMovements: Movement[]) {
+    console.log(latestMovements);
+    // reset previously set values
+    this.chartLabels = [];
+    this.chartData = [];
+    this.latestValues = [];
+
+    // sort movements by date
+    latestMovements.sort(function(m1, m2) {
+      return m1.date.getTime() - m2.date.getTime();
+    });
+
+    //push movement dates into labels and movement values into values
+    latestMovements.forEach(movement => {
+      this.latestValues.push(movement.value);
+      this.chartLabels.push(this.getTwoDigitDateFormat(movement.date.getDate()) + '-'
+      + this.getTwoDigitDateFormat(movement.date.getMonth()));
+    });
+
+    this.chartData = [{ data: this.latestValues, fill: false }];
+    // this.chart.update();
+  }
+
+  getTwoDigitDateFormat(dayOrMonth) {
+    return (dayOrMonth < 10) ? '0' + dayOrMonth : '' + dayOrMonth;
+  }
+
   //latest movements, from 30 days ago to the present
-  getLatestMovements() {
+  async getLatestMovements() {
     const currentDate = new Date();
     const pastDate = new Date();
     pastDate.setDate(pastDate.getDate() - 30);
+    let latestMovements: Movement[] = [];
 
-    this.movementsService.getMovements().subscribe(movements => {
-      this.latestMovements = movements.filter(
+    await this.movementsService.getMovements().subscribe(movements => {
+      latestMovements = movements.filter(
         (movement: Movement) =>
           movement.date >= pastDate && movement.date <= currentDate
       );
-      console.log(this.latestMovements);
+      this.setChartValues(latestMovements);
     });
   }
 
@@ -89,13 +117,7 @@ export class HomePage
     });
   }
 
-  onAccountSelect(account: BankAccount, item: IonItem) {
-      // const elements = document.querySelectorAll( 'div > ion-item' );
-      // console.log(elements);
-      // elements.forEach(element => {
-      //   (element as unknown as IonItem).color = 'light';
-      // });
-  
+  onAccountSelect(account: BankAccount, item: IonItem) { 
       this.accountsService.setCurrentAccount(account);
       this.selectedAccount = account;
       this.getLatestMovements();
