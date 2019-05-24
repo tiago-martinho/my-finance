@@ -20,6 +20,7 @@
             value="month"
             placeholder="Select a movement type"
             required
+            (ionChange)="onPeriodChange($event)"
           >
             <ion-select-option value="month">Last Month</ion-select-option>
             <ion-select-option value="year">Last Year</ion-select-option>
@@ -39,13 +40,13 @@
           </tr>
           <tr>
             <td><b>Daily Average</b></td>
-            <td></td>
-            <td></td>
+            <td class="table-value">{{ dailyAverageIncome | currency: 'EUR':'symbol'}}</td>
+            <td class="table-value">{{ dailyAverageExpenses | currency: 'EUR':'symbol'}}</td>
           </tr>
           <tr>
             <td><b>Total</b></td>
-            <td></td>
-            <td></td>
+            <td class="table-value">{{ totalIncome | currency: 'EUR':'symbol' }}</td>
+            <td class="table-value">{{ totalExpenses | currency: 'EUR':'symbol'}}</td>
           </tr>
         </table>
       </ion-col>
@@ -58,7 +59,7 @@
             <b>Cash Flow:</b>
           </ion-label>
           <ion-text>
-            1000.00 €
+            {{ cashFlow | currency: 'EUR':'symbol'}}
           </ion-text>
         </ion-item>
       </ion-col>

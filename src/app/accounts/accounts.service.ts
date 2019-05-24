@@ -10,6 +10,7 @@ interface AccountData {
   balance: number;
   name: string;
   userId: string;
+  creationDate: Date;
 }
 
 @Injectable({
@@ -53,6 +54,7 @@ export class AccountsService {
         newBankAccount.userId = fetchedUserId;
         newBankAccount.name = name;
         newBankAccount.balance = balance;
+        newBankAccount.creationDate = new Date();
         return this.http
           .post<{ name: string }>(`${this.accountsUrl}.json?auth=${token}`, {
             ...newBankAccount,
@@ -87,6 +89,7 @@ export class AccountsService {
         newAccount.userId = response.userId;
         newAccount.name = response.name;
         newAccount.balance = response.balance;
+        newAccount.creationDate = response.creationDate;
 
         return newAccount;
       })
@@ -120,6 +123,7 @@ export class AccountsService {
             newAccount.userId = response[key].userId;
             newAccount.name = response[key].name;
             newAccount.balance = response[key].balance;
+            newAccount.creationDate = response[key].creationDate;
             accounts.push(newAccount);
           }
         }
@@ -159,6 +163,7 @@ export class AccountsService {
         newAccount.userId = oldAccount.userId;
         newAccount.name = name;
         newAccount.balance = balance;
+        newAccount.creationDate = oldAccount.creationDate;
 
         updatedAccounts[updatedAccountIndex] = newAccount;
 

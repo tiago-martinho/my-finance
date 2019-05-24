@@ -67,7 +67,7 @@ export class HomePage
     });
   }
 
-  private setChartValues(latestMovements: Movement[]) {
+  private setChartData(latestMovements: Movement[]) {
     console.log(latestMovements);
     // reset previously set values
     this.chartLabels = [];
@@ -106,7 +106,7 @@ export class HomePage
         (movement: Movement) =>
           movement.date >= pastDate && movement.date <= currentDate
       );
-      this.setChartValues(latestMovements);
+      this.setChartData(latestMovements);
     });
   }
 
