@@ -7,16 +7,17 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content> .
+<ion-content>
+  .
   <ion-grid>
     <ion-row class="ion-margin-top">
-      <ion-col size="">
+      <ion-col size="8" offset="2">
         <ion-item>
           <ion-label position="floating">
             Period
           </ion-label>
           <ion-select
-           value="month"
+            value="month"
             placeholder="Select a movement type"
             required
           >
@@ -26,6 +27,60 @@
           </ion-select>
         </ion-item>
       </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-margin-top">
+      <ion-col class="ion-margin">
+        <table style="width:100%">
+          <tr>
+            <th class="empty-column"></th>
+            <th>Income</th>
+            <th>Expenses</th>
+          </tr>
+          <tr>
+            <td><b>Daily Average</b></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><b>Total</b></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>
+            <b>Cash Flow:</b>
+          </ion-label>
+          <ion-text>
+            1000.00 €
+          </ion-text>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col padding>
+          <h3>
+            <b>Expenses by category</b>
+          </h3>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+        <canvas baseChart
+        [data]="pieChartData"
+        [labels]="pieChartLabels"
+        [chartType]="pieChartType"
+        [options]="pieChartOptions"
+        [colors]="pieChartColors"
+        [legend]="pieChartLegend">
+        </canvas>
     </ion-row>
 
   </ion-grid>
