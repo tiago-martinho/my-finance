@@ -11,9 +11,9 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-          <div *ngIf="isLoading" text-center>
-              <ion-spinner color="primary"></ion-spinner>
-          </div>
+        <div *ngIf="isLoading" text-center>
+          <ion-spinner color="primary"></ion-spinner>
+        </div>
         <div text-center *ngIf="!isLoading && movementsMatrix.length === 0">
           <p>
             No movements found! Please create one first!
@@ -26,17 +26,28 @@
                 arr[0].date.toISOString().substring(0, 7)
               }}</ion-label>
             </ion-list-header>
-            <ion-item text-wrap *ngFor="let movement of arr" 
-            [routerLink]="['/', 'edit-movement', movement.id]" detail>
-              <ion-label>
-                <h2>{{ movement.description }}</h2>
-                <p>{{ movement.categoryName }}</p>
-              </ion-label>
-              <ion-label position="fixed">
-                <h4>{{ (movement.isExpense ? - movement.value : movement.value) | currency: 'EUR':'symbol' }}</h4>
-                <p>{{ movement.date | date: 'dd-MM-yy' }}</p>
-              </ion-label>
-            </ion-item>
+            <ion-virtual-scroll [items]="arr">
+              <ion-item
+                text-wrap
+                *virtualItem="let movement"
+                [routerLink]="['/', 'edit-movement', movement.id]"
+                detail
+              >
+                <ion-label>
+                  <h2>{{ movement.description }}</h2>
+                  <p>{{ movement.categoryName }}</p>
+                </ion-label>
+                <ion-label position="fixed">
+                  <h4>
+                    {{
+                      (movement.isExpense ? -movement.value : movement.value)
+                        | currency: 'EUR':'symbol'
+                    }}
+                  </h4>
+                  <p>{{ movement.date | date: 'dd-MM-yy' }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-virtual-scroll>
           </ion-list>
         </ion-list>
       </ion-col>

@@ -3,9 +3,7 @@ import { Movement } from './movement.model';
 import { Router } from '@angular/router';
 import { MovementsService } from './movements.service';
 import * as _ from 'lodash';
-import { IonItemSliding } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { AccountsService } from '../accounts/accounts.service';
 
 @Component({
   selector: 'app-movements',
