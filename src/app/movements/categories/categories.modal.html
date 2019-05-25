@@ -14,7 +14,10 @@
   <ion-row>
     <ion-col size="12">
       <ion-list *ngIf="categories.length > 0">
-        <ion-item button *ngFor="let category of categories">
+        <ion-item button *ngFor="let category of categories">   
+          <ion-thumbnail slot="start">
+              <ion-img [src]="category.iconUrl"></ion-img>
+            </ion-thumbnail>  
           <ion-label (click)="onCategoryPick(category)">
             <ion-ripple-effect></ion-ripple-effect>
             {{ category.name }}

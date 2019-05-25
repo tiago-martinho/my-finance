@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AccountDetail } from '../account-detail';
 import {
   LoadingController,
@@ -16,7 +16,8 @@ import { BankAccount } from '../bank-account.model';
   templateUrl: './edit-account.page.html',
   styleUrls: ['./edit-account.page.scss']
 })
-export class EditAccountPage extends AccountDetail implements OnInit {
+export class EditAccountPage extends AccountDetail implements OnInit, OnDestroy {
+
   accountId: string;
   userId: string;
   isLoading = false;
@@ -138,4 +139,11 @@ export class EditAccountPage extends AccountDetail implements OnInit {
         alertElement.present();
       });
   }
+
+  ngOnDestroy(): void {
+    if (this.accountSub) {
+      this.accountSub.unsubscribe();
+    }
+  }
+
 }

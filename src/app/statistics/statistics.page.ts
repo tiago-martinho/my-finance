@@ -110,11 +110,14 @@ export class StatisticsPage implements OnInit {
     this.pieChartLabels = [];
     this.pieChartData = [];
 
-    // group movements by category
     if (movements.length === 0) {
       return;
     }
 
+    // only want expenses
+    movements = movements.filter(movement =>  movement.isExpense);
+
+    // group by category
     const groups = _.groupBy(movements, function(item) {
       return item.categoryName;
     });
