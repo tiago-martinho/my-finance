@@ -1,5 +1,7 @@
 {
   "name": "MyFinance",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

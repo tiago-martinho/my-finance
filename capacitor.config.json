@@ -1,0 +1,7 @@
+{
+  "appId": "com.iscte.myfinance",
+  "appName": "MyFinance",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
