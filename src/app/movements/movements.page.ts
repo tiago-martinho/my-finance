@@ -105,13 +105,6 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsMatrix = this.movementsMatrix.sort(function(a, b) {
       return a[0].date > b[0].date ? -1 : 1;
     });
-
-    console.log('SORTED MATRIX ' + this.movementsMatrix);
-
-    // //sort the arrays by date
-    // this.movementsMatrix = this.movementsMatrix.sort((function(a, b) {
-    //   return a[7] > b[7] ? 1 : -1;
-    // }));
   }
 
   ngOnDestroy(): void {

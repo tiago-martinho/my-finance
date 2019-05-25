@@ -9,7 +9,7 @@ import { Category } from './categories/category.model';
 export class MovementDetail implements OnInit {
   form: FormGroup;
   category: Category = new Category(null, null, null);
-  today = new Date();
+  currentDate = new Date();
 
   constructor(
     protected movementsService: MovementsService,

@@ -78,6 +78,8 @@
               display-format="DD-MM-YYYY"
               picker-format="DD MM YYYY"
               formControlName="date"
+              [min]="2016"
+              [max]="currentDate.toISOString()"
               required
             ></ion-datetime>
           </ion-item>
