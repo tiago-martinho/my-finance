@@ -41,7 +41,7 @@ export class MovementsPage implements OnInit, OnDestroy {
   }
 
   onNewMovement() {
-    this.router.navigateByUrl('new-movement');
+    this.router.navigateByUrl('movements/new-movement');
   }
 
   searchMovements(event) {

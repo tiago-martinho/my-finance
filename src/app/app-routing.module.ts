@@ -16,8 +16,23 @@ const routes: Routes = [
   },
   {
     path: 'movements',
-    loadChildren: './movements/movements.module#MovementsPageModule',
-    canLoad: [AuthGuard]
+    children: [
+      {
+        path: '',
+        loadChildren: './movements/movements.module#MovementsPageModule',
+        canLoad: [AuthGuard]
+      },
+      {
+        path: 'new-movement',
+        loadChildren: './movements/new-movement/new-movement.module#NewMovementPageModule',
+        canLoad: [AuthGuard]
+      },
+      {
+        path: 'edit-movement/:movementId',
+        loadChildren: './movements/edit-movement/edit-movement.module#EditMovementPageModule',
+        canLoad: [AuthGuard]
+      }
+    ]
   },
   {
     path: 'statistics',
@@ -30,21 +45,15 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'new-movement',
+    path: 'new-account',
     loadChildren:
-      './movements/new-movement/new-movement.module#NewMovementPageModule',
-    canLoad: [AuthGuard]
+      './accounts/new-account/new-account.module#NewAccountPageModule'
   },
   {
-    path: 'edit-movement/:movementId',
+    path: 'edit-account/:accountId',
     loadChildren:
-      './movements/edit-movement/edit-movement.module#EditMovementPageModule',
-    canLoad: [AuthGuard]
-  },
-  { path: 'new-account', loadChildren: './accounts/new-account/new-account.module#NewAccountPageModule' },
-  { path: 'edit-account/:accountId', loadChildren: './accounts/edit-account/edit-account.module#EditAccountPageModule' }
-
-
+      './accounts/edit-account/edit-account.module#EditAccountPageModule'
+  }
 ];
 
 @NgModule({
