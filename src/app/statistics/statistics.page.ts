@@ -5,6 +5,7 @@ import { MovementsService } from '../movements/movements.service';
 import { Movement } from '../movements/movement.model';
 import * as _ from 'lodash';
 import { AccountsService } from '../accounts/accounts.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-statistics',
@@ -58,7 +59,8 @@ export class StatisticsPage implements OnInit {
 
   constructor(
     private movementsService: MovementsService,
-    private accountsService: AccountsService
+    private accountsService: AccountsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -97,6 +99,9 @@ export class StatisticsPage implements OnInit {
       );
       this.setChartData(movements);
       this.setTableData(movements, days);
+    }, (error) => {
+      console.log(error);
+      this.router.navigate(['home']);
     });
   }
 

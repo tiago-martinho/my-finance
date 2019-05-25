@@ -58,17 +58,26 @@ export class HomePage
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
       if (accounts.length > 0) {
-        // sets the first account as default
-        this.accountsService.setCurrentAccount(accounts[0]);
-        this.selectedAccount = accounts[0];
+        // sets the first account as default if one is not set currently
+        const currentAccount = this.accountsService.getCurrentAccount();
+        if (currentAccount === null) {
+          this.accountsService.setCurrentAccount(accounts[0]);
+          this.selectedAccount = accounts[0];
+        } else {
+          this.selectedAccount = currentAccount;
+        }
         this.accounts = accounts;
         this.getLatestMovements();
       }
     });
   }
 
+  // objects are never equal since they're two different instances so comparison of their stringfied versions is made
+  compareAccounts(account: BankAccount) {
+    return (JSON.stringify(account) === JSON.stringify(this.selectedAccount));
+  }
+
   private setChartData(latestMovements: Movement[]) {
-    console.log(latestMovements);
     // reset previously set values
     this.chartLabels = [];
     this.chartData = [];
@@ -126,10 +135,6 @@ export class HomePage
 
   onEditAccount() {
     this.router.navigateByUrl('/edit-account/' + this.selectedAccount.id);
-  }
-
-  onChartClick(event) {
-    console.log(event);
   }
 
   async onNewAccount() {

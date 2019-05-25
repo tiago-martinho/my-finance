@@ -18,10 +18,12 @@
         <div text-center *ngIf="!isLoading && accounts.length === 0">
           <p>
             No accounts found! Please create one first!
+          </p>
+          <br>
             <ion-button color="primary" routerLink="/new-account"
               >New Account</ion-button
             >
-          </p>
+
         </div>
         <ion-list *ngIf="!isLoading && accounts.length > 0">
           <ion-label class="ion-text-center ion-margin">
@@ -33,15 +35,9 @@
               lines="inset"
               detail
               button
-              [class.selected]="account === selectedAccount"
+              [class.selected]="compareAccounts(account)"
               (click)="onAccountSelect(account, $event.srcElement)"
             >
-                <!-- This is needed so the first account is selected by default -->
-                <!-- <span *ngIf="isFirst"><ion-button color="primary" (click)="onAccountSelect(account, $event.srcElement)">{{ account.name }}</ion-button></span>
-                <span *ngIf="!isFirst"><ion-button color="light" (click)="onAccountSelect(account, $event.srcElement)">{{ account.name }}</ion-button></span> -->
-              <!-- <ion-label position="fixed">
-                &nbsp;&nbsp;{{ account.balance | currency: 'EUR':'symbol' }}
-              </ion-label> -->
               <ion-label>
                 {{ account.name }}
               </ion-label>
@@ -55,14 +51,14 @@
     </ion-row>
 
 
-    <ion-row>
+    <ion-row *ngIf="!isLoading && accounts.length > 0">
       <ion-col size="6" offset="3">
           <ion-button shape="round" fill="outline" *ngIf="!isLoading" color="medium" (click)="onEditAccount()">
               <ion-icon slot="start" name="create"></ion-icon>Edit Account</ion-button>
       </ion-col>
     </ion-row>
 
-    <ion-row class="ion-margin-top">
+    <ion-row *ngIf="!isLoading && accounts.length > 0" class="ion-margin-top">
       <ion-col size="8" offset="2">
           <h1>
             Latest Movements
@@ -70,7 +66,7 @@
       </ion-col>
     </ion-row>
       
-    <ion-row class="ion-margin-top">
+    <ion-row *ngIf="!isLoading && accounts.length > 0" class="ion-margin-top">
       <canvas
         baseChart
         [chartType]="'line'"
@@ -79,7 +75,6 @@
         [options]="chartOptions"
         [legend]="false"
         [colors]="myColors"
-        (chartClick)="onChartClick($event)"
       >
       </canvas>
     </ion-row>

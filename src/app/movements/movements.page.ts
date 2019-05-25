@@ -33,6 +33,9 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
       this.groupMovements(res);
       this.isLoading = false;
+    }, (error) => {
+      console.log(error);
+      this.router.navigate(['home']);
     });
   }
 

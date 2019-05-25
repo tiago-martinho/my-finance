@@ -36,7 +36,7 @@ export class AuthService implements OnDestroy {
     );
   }
 
-   get userId() {
+  get userId() {
     return this._user.asObservable().pipe(
       map(user => {
         if (user) {
@@ -120,12 +120,29 @@ export class AuthService implements OnDestroy {
       .pipe(tap(this.setUserData.bind(this)));
   }
 
-  logout() {
+  async logout() {
     if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
     }
+
+    await this.clearData().then(() => {
+      console.log('data cleared');
+      location.reload();
+    })
+  }
+
+  private async clearData() {
     this._user.next(null);
     Plugins.Storage.remove({ key: 'authData' });
+    localStorage.clear();
+    const cookies = document.cookie.split(';');
+
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
   }
 
   ngOnDestroy() {
