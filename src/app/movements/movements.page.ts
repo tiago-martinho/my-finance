@@ -16,6 +16,7 @@ export class MovementsPage implements OnInit, OnDestroy {
   private movementsSub: Subscription;
   movements: Movement[];
   movementsMatrix: Movement[][] = [];
+  backupMovements: Movement[][] = [];
   isLoading = false;
 
   constructor(private router: Router, private movementsService: MovementsService) { }
@@ -31,6 +32,8 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsService.getMovements().subscribe((res: Movement[]) => {
       this.groupMovements(res);
       this.isLoading = false;
+      this.backupMovements = this.movementsMatrix; // so we don't need to fetch the same data everytime a new search is made
+      console.log(this.backupMovements);
     }, (error) => {
       console.log(error);
       this.router.navigate(['home']);
@@ -39,6 +42,26 @@ export class MovementsPage implements OnInit, OnDestroy {
 
   onNewMovement() {
     this.router.navigateByUrl('new-movement');
+  }
+
+  searchMovements(event) {
+    console.log(event);
+    this.isLoading = true;
+    this.movements = _.flatten(this.movementsMatrix);
+    if (event.target.value !== '') {
+      this.movements = this.movements.filter(movement => movement.description.toLocaleLowerCase()
+      .includes(event.target.value.toLocaleLowerCase()));
+      this.groupMovements(this.movements);
+    }
+    this.isLoading = false;
+  }
+
+  clearResults() {
+    this.isLoading = true;
+    if (this.backupMovements.length > 0) {
+      this.movementsMatrix = this.backupMovements;
+    }
+    this.isLoading = false;
   }
 
   //This function groups and orders the movements by year-month in order to create headers in the list presented in the view
@@ -76,6 +99,7 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.movementsMatrix = this.movementsMatrix.sort((function(a, b) { 
       return a[7] > b[7] ? 1 : -1;
     }));
+
   }   
 
   ngOnDestroy(): void {
