@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">MyFinance</string>
     <string name="title_activity_main">MyFinance</string>
-    <string name="package_name">com.iscte.myfinancer</string>
+    <string name="package_name">com.iscte.myfinance</string>
     <string name="fileprovider_authority">com.iscte.myfinance.fileprovider</string>
     <string name="custom_url_scheme">com.iscte.myfinance</string>
 </resources>
