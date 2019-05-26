@@ -19,14 +19,9 @@ export class CategoriesModal implements OnInit, OnDestroy {
   constructor(private movementsService: MovementsService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
+    this.isLoading = true;
     this.categoriesSub = this.movementsService.categories.subscribe(categories => {
       this.categories = _.sortBy(categories, 'name');
-    });
-  }
-
-  ionViewWillEnter() {
-    this.isLoading = true;
-    this.movementsService.getMovementCategories().subscribe(() => {
       this.isLoading = false;
     });
   }
@@ -40,6 +35,13 @@ export class CategoriesModal implements OnInit, OnDestroy {
       },
       'confirm'
     );
+  }
+
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.movementsService.getMovementCategories().subscribe(() => {
+      this.isLoading = false;
+    });
   }
 
   onCancel() {

@@ -125,12 +125,11 @@ export class AuthService implements OnDestroy {
       clearTimeout(this.activeLogoutTimer);
     }
 
-    await this.clearData().then(() => {
-      location.reload();
-    })
+    await this.clearData();
+    location.reload();
   }
 
-  private async clearData() {
+  private clearData() {
     this._user.next(null);
     Plugins.Storage.remove({ key: 'authData' });
     localStorage.clear();

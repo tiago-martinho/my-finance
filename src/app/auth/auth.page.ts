@@ -21,7 +21,9 @@ export class AuthPage implements OnInit {
     private alertCtrl: AlertController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
 
   authenticate(email: string, password: string) {
     this.isLoading = true;
