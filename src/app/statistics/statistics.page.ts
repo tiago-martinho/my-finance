@@ -86,10 +86,12 @@ export class StatisticsPage implements OnInit {
       // in this case the difference between present day and account creation date is used for daily average calculations
       const account = this.accountsService.getCurrentAccount();
       pastDate = new Date(account.creationDate);
-      days = currentDate.getDate() - pastDate.getDate();
+      const diff = Math.abs(currentDate.getTime() - pastDate.getTime());
+      days = Math.ceil(diff / (1000 * 3600 * 24));
     }
 
     console.log('Past Date: ' + pastDate);
+    console.log('Days: ' + days);
     let movements: Movement[] = [];
 
     await this.movementsService.getMovements().subscribe(response => {
