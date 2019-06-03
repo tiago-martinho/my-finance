@@ -73,7 +73,7 @@ export class StatisticsPage implements OnInit {
 
   async getMovementsByTimeFrame(option) {
     const currentDate = new Date();
-    const pastDate = new Date();
+    let pastDate = new Date();
     let days = 0; // this variable is needed to calculate the daily average income and expenses
 
     if (option === 'month') {
@@ -85,11 +85,11 @@ export class StatisticsPage implements OnInit {
     } else {
       // in this case the difference between present day and account creation date is used for daily average calculations
       const account = this.accountsService.getCurrentAccount();
-      const accountDate = new Date(account.creationDate);
-      pastDate.setDate(accountDate.getDate());
+      pastDate = new Date(account.creationDate);
       days = currentDate.getDate() - pastDate.getDate();
     }
 
+    console.log('Past Date: ' + pastDate);
     let movements: Movement[] = [];
 
     await this.movementsService.getMovements().subscribe(response => {
@@ -97,6 +97,7 @@ export class StatisticsPage implements OnInit {
         (movement: Movement) =>
           movement.date >= pastDate && movement.date <= currentDate
       );
+      console.log(movements);
       this.setChartData(movements);
       this.setTableData(movements, days);
     }, (error) => {
