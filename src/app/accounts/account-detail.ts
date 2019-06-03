@@ -16,11 +16,11 @@ export class AccountDetail implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({
       name: new FormControl(null, {
-        updateOn: 'blur',
+        updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(10)]
       }),
       balance: new FormControl(null, {
-        updateOn: 'blur',
+        updateOn: 'change',
         validators: [Validators.required, Validators.min(1)]
       })
     });
