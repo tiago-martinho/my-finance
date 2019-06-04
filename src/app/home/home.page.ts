@@ -57,18 +57,7 @@ export class HomePage
 
   ngOnInit() {
     this.accountsSub = this.accountsService.accounts.subscribe(accounts => {
-      if (accounts.length > 0) {
-        // sets the first account as default if one is not set currently
-        const currentAccount = this.accountsService.getCurrentAccount();
-        if (currentAccount === null) {
-          this.accountsService.setCurrentAccount(accounts[0]);
-          this.selectedAccount = accounts[0];
-        } else {
-          this.selectedAccount = currentAccount;
-        }
-        this.accounts = accounts;
-        this.getLatestMovements();
-      }
+      this.accounts = accounts;
     });
   }
 
@@ -92,7 +81,7 @@ export class HomePage
     latestMovements.forEach(movement => {
       this.latestValues.push(movement.value);
       this.chartLabels.push(this.getTwoDigitDateFormat(movement.date.getDate()) + '-'
-      + this.getTwoDigitDateFormat(movement.date.getMonth()));
+      + this.getTwoDigitDateFormat(movement.date.getMonth() + 1));
     });
 
     this.chartData = [{ data: this.latestValues, fill: false }];
@@ -121,9 +110,21 @@ export class HomePage
 
   ionViewWillEnter() {
     this.isLoading = true;
-    this.accountsService.getAccounts().subscribe(() => {
+    this.accountsService.getAccounts().subscribe((accounts) => {
+      if (accounts.length > 0) {
+        // sets the first account as default if one is not set currently
+        const currentAccount = this.accountsService.getCurrentAccount();
+        if (currentAccount === null) {
+          this.accountsService.setCurrentAccount(accounts[0]);
+          this.selectedAccount = accounts[0];
+        } else {
+          this.selectedAccount = currentAccount;
+        }
+        this.accounts = accounts;
+        this.getLatestMovements();
+      }
       this.isLoading = false;
-    });
+    });   
   }
 
   onAccountSelect(account: BankAccount, item: IonItem) { 
